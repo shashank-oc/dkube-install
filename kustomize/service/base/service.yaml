@@ -543,6 +543,7 @@ spec:
       - excludedPaths:
         - exact: /
         - prefix: /dex
+        - prefix: /cicd
         - prefix: /pipeline
         - prefix: /ml_metadata
         - prefix: /dkube/pipeline
@@ -568,6 +569,7 @@ spec:
       - excludedPaths:
         - exact: /
         - prefix: /dex
+        - prefix: /cicd
         - prefix: /pipeline
         - prefix: /ml_metadata
         - prefix: /dkube/pipeline
