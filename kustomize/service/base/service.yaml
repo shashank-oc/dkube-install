@@ -944,8 +944,8 @@ spec:
           number: 3000
         host: dkube-ui
     retries:
-      attempts: 3
-      perTryTimeout: 5s
+      attempts: 10
+      perTryTimeout: 1s
       retryOn: gateway-error,connect-failure,refused-stream
 ---
 apiVersion: networking.istio.io/v1alpha3
