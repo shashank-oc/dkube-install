@@ -543,7 +543,9 @@ spec:
       - excludedPaths:
         - exact: /
         - prefix: /dex
+        - prefix: /cicd
         - prefix: /pipeline
+        - prefix: /ml_metadata
         - prefix: /dkube/pipeline
         - prefix: /static
         - prefix: /callback
@@ -557,7 +559,6 @@ spec:
         - prefix: /dkube/v2/controller/notify
         - prefix: /dkube/v2/controller/init
         - prefix: /dkube/v2/controller/dkubeinfo
-        - prefix: /cicd
         - suffix: /custom
         - prefix: /v1/models/
         - regex: .*/nb/.*|.*/nb/lab.*|.*/tb/.*|.*/inference|.*/font-roboto/.*|.*/installer|.*/report|.*/katib.*|.*/rs.*|.*/docs/.*|.*/healthz
@@ -568,7 +569,9 @@ spec:
       - excludedPaths:
         - exact: /
         - prefix: /dex
+        - prefix: /cicd
         - prefix: /pipeline
+        - prefix: /ml_metadata
         - prefix: /dkube/pipeline
         - prefix: /static
         - prefix: /callback
@@ -582,7 +585,6 @@ spec:
         - prefix: /dkube/v2/controller/notify
         - prefix: /dkube/v2/controller/init
         - prefix: /dkube/v2/controller/dkubeinfo
-        - prefix: /cicd
         - suffix: /custom
         - prefix: /v1/models/
         - regex: .*/nb/.*|.*/nb/lab.*|.*/tb/.*|.*/inference|.*/font-roboto/.*|.*/installer|.*/report|.*/katib.*|.*/rs.*|.*/docs/.*|.*/healthz
@@ -942,8 +944,8 @@ spec:
           number: 3000
         host: dkube-ui
     retries:
-      attempts: 3
-      perTryTimeout: 5s
+      attempts: 10
+      perTryTimeout: 1s
       retryOn: gateway-error,connect-failure,refused-stream
 ---
 apiVersion: networking.istio.io/v1alpha3
@@ -1075,6 +1077,18 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /ml_metadata
+    route:
+    - destination:
+        host: metadata-envoy-service.kubeflow.svc.cluster.local
+        port:
+          number: 9090
+    retries:
+      attempts: 3
+      perTryTimeout: 5s
+      retryOn: gateway-error,connect-failure,refused-stream
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1146,6 +1160,18 @@ spec:
     - destination:
         port:
           number: 5000
+        host: dkube-controller-master
+    retries:
+      attempts: 3
+      perTryTimeout: 5s
+      retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /api/2.0/mlflow
+    route:
+    - destination:
+        port:
+          number: 5002
         host: dkube-controller-master
     retries:
       attempts: 3
