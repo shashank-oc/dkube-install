@@ -630,6 +630,14 @@ spec:
       index: FIRST
     listenerMatch:
       listenerType: GATEWAY
+  - filterConfig:
+      inlineCode: |
+        compression_level: BEST
+    filterName: envoy.gzip
+    filterType: HTTP
+    listenerMatch:
+      listenerProtocol: HTTP
+      listenerType: GATEWAY
   workloadLabels:
     dkube: ingressgateway
 ---
@@ -945,6 +953,10 @@ spec:
         port:
           number: 3000
         host: dkube-ui
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
     retries:
       attempts: 10
       perTryTimeout: 1s
@@ -971,6 +983,10 @@ spec:
         port:
           number: 80
         host: argo-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
     retries:
       attempts: 3
       perTryTimeout: 5s
@@ -995,6 +1011,10 @@ spec:
         port:
           number: 80
         host: katib-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
     retries:
       attempts: 3
       perTryTimeout: 5s
@@ -1075,6 +1095,12 @@ spec:
         host: ml-pipeline-ui.kubeflow.svc.cluster.local
         port:
           number: 80
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+          remove:
+          - Cache-Control
     retries:
       attempts: 3
       perTryTimeout: 5s
