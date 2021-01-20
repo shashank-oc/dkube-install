@@ -609,6 +609,7 @@ spec:
             - exact: d3-license
             - exact: d3-uname
             - exact: d3-role
+            - exact: referer
         authorizationResponse:
           allowedUpstreamHeaders:
             patterns:
