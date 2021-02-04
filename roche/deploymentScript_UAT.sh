@@ -1,29 +1,40 @@
 #!/bin/bash
 
-# --> SCRIPT IS CONFIGURED TO BE RUN ON ROCHE UAT SETUP <--
+set -e
+
+# --> SCRIPT IS CONFIGURED TO RUN ON ROCHE UAT SETUP <--
 
 # Prints on stdout in colour fonts
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+NC='\033[0m'
 
-#******************************************************************************************#
-#									USER DEFINED VARIABLES								   #
-#******************************************************************************************#
-#Enter corresponding value between double quotes
+#******************************************************#
+#				USER DEFINED VARIABLES				   #
+#******************************************************#
+#Fill corresponding value between double quotes
 TOKEN=""
+#FSx related variables
 HOMEDIR=""
 MOUNTNAME=""
 VOLUMEHANDLE=${HOMEDIR}
+#Fill the base domain prefixed with https://
+#Example: https://www.uat.us.mlaas.apollo.roche.com
+BASEDOMAIN="" 
 
-printf "${GREEN}\nPatching dkube-platform-cfg file\n"
-
+printf "${GREEN}\nPatching dkube-platform-cfg file ...${NC}\n"
+kubectl get cm dkube-platform-cfg -n dkube -o yaml > cm-old.yaml
 kubectl get cm dkube-platform-cfg -n dkube -o json > cm-old.json
 
 #Backup old config file
 cp cm-old.json cm-new.json
 
+printf "Backup of dkube-platform-cfg is saved as cm-old.json and cm-old.yaml\n"
+
+jq '.data."config.json"' -r cm-new.json > tmp && mv tmp cm-new.json
+
 #Remove dkube rstudio images
-jq 'del(.frameworks[].versions[] | select(.caps[] | contains("r-ide")))' cm-new.json > tmp && mv tmp cm-new.json
+jq 'del(.frameworks[].versions[] | select(.caps[0] == "r-ide"))'  cm-new.json > tmp && mv tmp cm-new.json
 
 #Add base domain
 jq '.access."base-domain" = "https://www.uat.us.mlaas.apollo.roche.com"' cm-new.json > tmp && mv tmp cm-new.json
@@ -43,21 +54,45 @@ jq '.frameworks[5].versions += [{"name":"r4.0.0-rstudio1.3", "image":"5079873122
 kubectl create configmap dkube-platform-cfg --from-file=config\.json=cm-new.json -n dkube -o yaml --dry-run | kubectl apply -f -
 
 if [ $? -ne 0 ]; then
-	printf "${RED}Failed to patch dkube-platform-cfg\n"
+	printf "${RED}Failed to patch dkube-platform-cfg${NC}\n"
 	exit 1
 fi
 
-rm -f cm-new.json cm-old.json
+rm -f cm-new.json
 
-printf "${GREEN}\nCreate FSx user profile\n"
-curl --insecure -XPOST -H 'Authorization: Bearer ${TOKEN}' -H "Content-type: application/json" -d '{"Kind":"inline","Inline":{"Name":"global","Homedir":"fsx://${HOMEDIR}.fsx.us-west-2.amazonaws.com","options":[{"key":"volumeHandle","value":"${VOLUMEHANDLE}"},{"key":"mountname","value":"${MOUNTNAME}"}],"Limits":{"Cpus":"1"}}}' 'https://www.uat.us.mlaas.apollo.roche.com/dkube/v2/controller/userprofiles'
+generateCurlData=`cat <<EOF
+{
+	"Kind":"inline",
+	"Inline":{
+		"Name":"global",
+		"Homedir":"fsx://${HOMEDIR}.fsx.us-west-2.amazonaws.com",
+		"options":[
+			{
+				"key":"volumeHandle",
+				"value":"${VOLUMEHANDLE}"
+			},
+			{
+				"key":"mountname",
+				"value":"${MOUNTNAME}"
+			}
+		],
+		"Limits":{
+			"Cpus":"1"
+		}
+	}
+}
+EOF
+`
+
+printf "${GREEN}\nCreating FSx user profile ...${NC}\n"
+curl --insecure -XPOST -H "Authorization: Bearer ${TOKEN}" -H "Content-type: application/json" -d "${generateCurlData}" "${BASEDOMAIN}/dkube/v2/controller/userprofiles"
 
 if [ $? -ne 0 ]; then
 	printf "${RED}Failed to create FSx user profile\n"
 	exit 1
 fi
 
-printf "${GREEN}\nApplying redshift configmap\n"
+printf "${GREEN}\nApplying redshift configmap ...${NC}\n"
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 data:
@@ -72,8 +107,8 @@ metadata:
 EOF
 
 if [ $? -ne 0 ]; then
-	printf "${RED}Failed to apply redshift configmap\n"
+	printf "${RED}Failed to apply redshift configmap ${NC}\n"
 	exit 1
 fi
 
-printf "${GREEN}\nAll done!\n"
+printf "${GREEN}\nAll done!${NC}\n"
