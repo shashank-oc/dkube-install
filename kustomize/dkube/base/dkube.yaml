@@ -36,6 +36,8 @@ spec:
           value: nfsServer
         - name: NFS_BASE_PATH
           value: nfsBasePath
+        - name: CEPH_MONITORS
+          value: 'cephMonitors'
         - name: DKUBE_STORAGE_PROVIDER
           valueFrom:
             configMapKeyRef:
@@ -47,10 +49,6 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
-        envFrom:
-        - configMapRef:
-            name: ceph-config
-            optional: true
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -66,12 +64,10 @@ spec:
         volumeMounts:
         - mountPath: /home/dkube/d3s
           name: store
-          subPath: dkube
         - mountPath: /var/run/docker.sock
           name: docker
         - mountPath: /var/log/dkube
-          subPath: dkube/system/logs/dkube
-          name: store
+          name: dkube-logs
         - mountPath: /etc/dkube/dkube_platform_cfg
           name: pc
       - image: dkubeDownloaderImage
@@ -93,8 +89,19 @@ spec:
       serviceAccountName: dkube
       volumes:
       - name: store
-        persistentVolumeClaim:
-          claimName: dkube-pvc
+        cephfs:
+          monitors: cephMonitors
+          path: /dkube
+          user: admin
+          secretRef:
+            name: ceph-secret
+      - name: dkube-logs
+        cephfs:
+          monitors: cephMonitors
+          path: /dkube/system/logs/dkube
+          user: admin
+          secretRef:
+            name: ceph-secret
       - hostPath:
           path: /var/run/docker.sock
         name: docker
@@ -263,7 +270,6 @@ spec:
         volumeMounts:
         - mountPath: /var/log/dkube
           name: dkube-logs
-          subPath: dkube/system/logs/dkube
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: dkubeDockerSecret
@@ -273,8 +279,12 @@ spec:
       serviceAccountName: dkube
       volumes:
       - name: dkube-logs
-        persistentVolumeClaim:
-          claimName: dkube-pvc
+        cephfs:
+          monitors: cephMonitors
+          path: /dkube/system/logs/dkube
+          user: admin
+          secretRef:
+            name: ceph-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -453,8 +463,12 @@ spec:
       terminationGracePeriodSeconds: 30
       volumes:
       - name: storage
-        persistentVolumeClaim:
-          claimName: dkube-pvc
+        cephfs:
+          monitors: cephMonitors
+          path: /
+          user: admin
+          secretRef:
+            name: ceph-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -555,7 +569,6 @@ spec:
         volumeMounts:
         - mountPath: /dkube
           name: store
-          subPath: dkube
       - env:
         - name: DKUBE_MOUNT_PATH
           value: /home/dkube/d3s
@@ -575,6 +588,8 @@ spec:
           value: nfsBasePath
         - name: DKUBE_APISERVER_ROLE
           value: master
+        - name: CEPH_MONITORS
+          value: 'cephMonitors'
         - name: DKUBE_STORAGE_PROVIDER
           valueFrom:
             configMapKeyRef:
@@ -584,10 +599,6 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
-        envFrom:
-        - configMapRef:
-            name: ceph-config
-            optional: true
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -603,12 +614,10 @@ spec:
         volumeMounts:
         - mountPath: /home/dkube/d3s
           name: store
-          subPath: dkube
         - mountPath: /var/run/docker.sock
           name: docker
         - mountPath: /var/log/dkube
-          name: store
-          subPath: dkube/system/logs/dkube
+          name: dkube-logs
         - mountPath: /etc/dkube/dkube_platform_cfg
           name: pc
       dnsConfig:
@@ -625,8 +634,19 @@ spec:
       serviceAccountName: dkube
       volumes:
       - name: store
-        persistentVolumeClaim:
-          claimName: dkube-pvc
+        cephfs:
+          monitors: cephMonitors
+          path: /dkube
+          user: admin
+          secretRef:
+            name: ceph-secret
+      - name: dkube-logs
+        cephfs:
+          monitors: cephMonitors
+          path: /dkube/system/logs/dkube
+          user: admin
+          secretRef:
+            name: ceph-secret
       - hostPath:
           path: /var/run/docker.sock
         name: docker
