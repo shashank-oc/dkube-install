@@ -49,10 +49,6 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
-        envFrom:
-        - configMapRef:
-            name: ceph-config
-            optional: true
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -68,7 +64,6 @@ spec:
         volumeMounts:
         - mountPath: /home/dkube/d3s
           name: store
-          subPath: dkube
         - mountPath: /var/run/docker.sock
           name: docker
         - mountPath: /var/log/dkube
@@ -275,7 +270,6 @@ spec:
         volumeMounts:
         - mountPath: /var/log/dkube
           name: dkube-logs
-          subPath: dkube/system/logs/dkube
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: dkubeDockerSecret
@@ -575,7 +569,6 @@ spec:
         volumeMounts:
         - mountPath: /dkube
           name: store
-          subPath: dkube
       - env:
         - name: DKUBE_MOUNT_PATH
           value: /home/dkube/d3s
@@ -606,10 +599,6 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
-        envFrom:
-        - configMapRef:
-            name: ceph-config
-            optional: true
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -625,7 +614,6 @@ spec:
         volumeMounts:
         - mountPath: /home/dkube/d3s
           name: store
-          subPath: dkube
         - mountPath: /var/run/docker.sock
           name: docker
         - mountPath: /var/log/dkube
