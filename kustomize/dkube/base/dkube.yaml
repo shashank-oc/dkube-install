@@ -143,8 +143,9 @@ spec:
           name: http-metrics
           protocol: TCP
         securityContext:
-          privileged: true
-          runAsUser: 0
+          capabilities:
+            add:
+              - SYS_ADMIN
         volumeMounts:
         - mountPath: /usr/local/nvidia/lib64
           name: nvidia-lib
