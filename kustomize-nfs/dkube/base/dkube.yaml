@@ -129,6 +129,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
+        - name: NVIDIA_MIG_MONITOR_DEVICES
+          value: all
         image: dkubeExtImage
         imagePullPolicy: IfNotPresent
         name: main
