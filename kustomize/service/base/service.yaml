@@ -169,7 +169,7 @@ data:
     <match kubernetes_jobs.**>
        @type s3
        aws_key_id dkube
-       aws_sec_key l06dands19s
+       aws_sec_key MINIO_SECRET_KEY
        s3_endpoint http://dkube-minio-server.dkube:9000/
        s3_bucket dkube
        path system/logs/${s3path}
