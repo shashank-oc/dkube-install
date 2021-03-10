@@ -526,72 +526,6 @@ spec:
     app: dkube-ui
   type: ClusterIP
 ---
-apiVersion: authentication.istio.io/v1alpha1
-kind: MeshPolicy
-metadata:
-  labels:
-    app: security
-    chart: security
-    heritage: Tiller
-    release: istio
-  name: default
-spec:
-  originIsOptional: false
-  origins:
-  - jwt:
-      issuer: http://localhost:5556/dex
-      jwksUri: http://dkube-auth-server.dkube.svc.cluster.local:5556/dex/keys
-      triggerRules:
-      - excludedPaths:
-        - exact: /
-        - prefix: /dex
-        - prefix: /cicd
-        - prefix: /pipeline
-        - prefix: /ml_metadata
-        - prefix: /dkube/pipeline
-        - prefix: /static
-        - prefix: /callback
-        - prefix: /favicon
-        - prefix: /dkube/v2/login
-        - prefix: /dkube/v2/logout
-        - prefix: /dkube/v2/ext
-        - prefix: /dkube/v2/etcd
-        - prefix: /dkube/v2/prometheus
-        - prefix: /dkube/v2/controller/dlsupport
-        - prefix: /dkube/v2/controller/notify
-        - prefix: /dkube/v2/controller/init
-        - prefix: /dkube/v2/controller/dkubeinfo
-        - suffix: /custom
-        - prefix: /v1/models/
-        - regex: .*/nb/.*|.*/nb/lab.*|.*/tb/.*|.*/inference|.*/font-roboto/.*|.*/installer|.*/report|.*/katib.*|.*/rs.*|.*/docs/.*|.*/healthz
-  - jwt:
-      issuer: DKube
-      jwksUri: http://dkube-auth-server.dkube.svc.cluster.local:3001/keys
-      triggerRules:
-      - excludedPaths:
-        - exact: /
-        - prefix: /dex
-        - prefix: /cicd
-        - prefix: /pipeline
-        - prefix: /ml_metadata
-        - prefix: /dkube/pipeline
-        - prefix: /static
-        - prefix: /callback
-        - prefix: /favicon
-        - prefix: /dkube/v2/login
-        - prefix: /dkube/v2/logout
-        - prefix: /dkube/v2/ext
-        - prefix: /dkube/v2/etcd
-        - prefix: /dkube/v2/prometheus
-        - prefix: /dkube/v2/controller/dlsupport
-        - prefix: /dkube/v2/controller/notify
-        - prefix: /dkube/v2/controller/init
-        - prefix: /dkube/v2/controller/dkubeinfo
-        - suffix: /custom
-        - prefix: /v1/models/
-        - regex: .*/nb/.*|.*/nb/lab.*|.*/tb/.*|.*/inference|.*/font-roboto/.*|.*/installer|.*/report|.*/katib.*|.*/rs.*|.*/docs/.*|.*/healthz
-  principalBinding: USE_ORIGIN
----
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -609,6 +543,7 @@ spec:
             - exact: d3-license
             - exact: d3-uname
             - exact: d3-role
+            - exact: referer
         authorizationResponse:
           allowedUpstreamHeaders:
             patterns:
@@ -629,6 +564,14 @@ spec:
     insertPosition:
       index: FIRST
     listenerMatch:
+      listenerType: GATEWAY
+  - filterConfig:
+      inlineCode: |
+        compression_level: BEST
+    filterName: envoy.gzip
+    filterType: HTTP
+    listenerMatch:
+      listenerProtocol: HTTP
       listenerType: GATEWAY
   workloadLabels:
     dkube: ingressgateway
@@ -945,6 +888,10 @@ spec:
         port:
           number: 3000
         host: dkube-ui
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
     retries:
       attempts: 10
       perTryTimeout: 1s
@@ -971,6 +918,10 @@ spec:
         port:
           number: 80
         host: argo-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
     retries:
       attempts: 3
       perTryTimeout: 5s
@@ -995,6 +946,10 @@ spec:
         port:
           number: 80
         host: katib-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
     retries:
       attempts: 3
       perTryTimeout: 5s
@@ -1075,6 +1030,12 @@ spec:
         host: ml-pipeline-ui.kubeflow.svc.cluster.local
         port:
           number: 80
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+          remove:
+          - Cache-Control
     retries:
       attempts: 3
       perTryTimeout: 5s
