@@ -207,22 +207,6 @@ metadata:
   namespace: dkube
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    ksonnet.io/component: service
-  name: dkube-db-pvc
-  namespace: dkube
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 50Gi
-  storageClassName: ""
-  volumeName: dkube-db-pv
----
-apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
