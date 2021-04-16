@@ -563,6 +563,8 @@ spec:
       - env:
         - name: DKUBE_MOUNT_PATH
           value: /home/dkube/d3s
+        - name: CLUSTER_ID
+          value: clusterID
         - name: DKUBE_REGISTRY
           value: dkubeRegistryPath
         - name: DKUBE_REGISTRY_UNAME
