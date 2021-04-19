@@ -22,6 +22,8 @@ spec:
       - env:
         - name: DKUBE_MOUNT_PATH
           value: /home/dkube/d3s
+        - name: CLUSTER_ID
+          value: clusterID
         - name: DKUBE_REGISTRY
           value: dkubeRegistryPath
         - name: DKUBE_REGISTRY_UNAME
@@ -253,10 +255,12 @@ spec:
       - image: dkubeAuthImage
         imagePullPolicy: IfNotPresent
         name: sidecar
-        command: ["bash", "-c", "sleep 30; /opt/dkube/d3"]
+        command: ["bash", "-c", "sleep 10; /opt/dkube/d3"]
         env:
         - name: DKUBE_CLUSTER
           value: dkubeClusterType
+        - name: CLUSTER_ID
+          value: clusterID
         ports:
         - containerPort: 3001
           name: authn
@@ -562,6 +566,8 @@ spec:
       - env:
         - name: DKUBE_MOUNT_PATH
           value: /home/dkube/d3s
+        - name: CLUSTER_ID
+          value: clusterID
         - name: DKUBE_REGISTRY
           value: dkubeRegistryPath
         - name: DKUBE_REGISTRY_UNAME

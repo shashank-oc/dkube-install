@@ -207,22 +207,6 @@ metadata:
   namespace: dkube
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    ksonnet.io/component: service
-  name: dkube-db-pvc
-  namespace: dkube
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 50Gi
-  storageClassName: ""
-  volumeName: dkube-db-pv
----
-apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
@@ -552,6 +536,7 @@ spec:
             - exact: d3-license
             - exact: d3-uname
             - exact: d3-role
+            - exact: x-cluster-id
         serverUri:
           cluster: outbound|3001||dkube-auth-server.dkube.svc.cluster.local
           failureModeAllow: false
@@ -716,6 +701,34 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /pagespeed
+    retries:
+      attempts: 3
+      perTryTimeout: 5s
+      retryOn: gateway-error,connect-failure,refused-stream
+    rewrite:
+      uri: /pagespeed
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
+  - match:
+    - uri:
+        prefix: /mod_pagespeed_beacon
+    retries:
+      attempts: 3
+      perTryTimeout: 5s
+      retryOn: gateway-error,connect-failure,refused-stream
+    rewrite:
+      uri: /mod_pagespeed_beacon
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
