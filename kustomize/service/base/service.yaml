@@ -559,7 +559,7 @@ spec:
       listenerProtocol: HTTP
       listenerType: GATEWAY
   workloadLabels:
-    dkube: ingressgateway
+    istio: ingressgateway
 ---
 apiVersion: v1
 kind: Service
@@ -567,36 +567,16 @@ metadata:
   name: dkube-proxy
   namespace: dkube
   labels:
-    dkube: ingressgateway
+    istio: ingressgateway
 spec:
   type: NodePort
   selector:
-    dkube: ingressgateway
+    istio: ingressgateway
   ports:
     -
       name: https
       nodePort: 32222
       port: 443
----
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: dkube-istio-gateway
-  namespace: dkube
-spec:
-  selector:
-    dkube: ingressgateway
-  servers:
-  - port:
-      number: 443
-      name: https
-      protocol: HTTPS
-    tls:
-      mode: SIMPLE
-      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
-      privateKey: /etc/istio/ingressgateway-certs/tls.key
-    hosts:
-    - "*"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
