@@ -185,6 +185,14 @@ spec:
       labels:
         app: dkube-node-exporter
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "dkube_mgmt_ds_schedule"
+                  operator: NotIn
+                  values: ["false"]
       tolerations:
         - operator: "Exists"
       containers:

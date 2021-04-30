@@ -16,6 +16,14 @@ spec:
       labels:
         app: dkube-controller-worker
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "dkube_mgmt_ds_schedule"
+                  operator: NotIn
+                  values: ["false"]
       tolerations:
         - operator: "Exists"
       containers:
@@ -128,6 +136,14 @@ spec:
       labels:
         app: dkube-ext
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "dkube_mgmt_ds_schedule"
+                  operator: NotIn
+                  values: ["false"]
       tolerations:
         - operator: "Exists"
       containers:
@@ -189,6 +205,14 @@ spec:
       labels:
         k8s-app: dkube-log-collector
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "dkube_mgmt_ds_schedule"
+                  operator: NotIn
+                  values: ["false"]
       tolerations:
         - operator: "Exists"
       containers:
