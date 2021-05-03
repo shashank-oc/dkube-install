@@ -514,7 +514,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   name: dkube-authn
-  namespace: dkube
+  namespace: istio-system
 spec:
   filters:
   - filterConfig:
@@ -559,24 +559,7 @@ spec:
       listenerProtocol: HTTP
       listenerType: GATEWAY
   workloadLabels:
-    dkube: ingressgateway
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dkube-proxy
-  namespace: dkube
-  labels:
-    dkube: ingressgateway
-spec:
-  type: NodePort
-  selector:
-    dkube: ingressgateway
-  ports:
-    -
-      name: https
-      nodePort: 32222
-      port: 443
+    istio: ingressgateway
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -585,7 +568,7 @@ metadata:
   namespace: dkube
 spec:
   selector:
-    dkube: ingressgateway
+    istio: ingressgateway
   servers:
   - port:
       number: 443
@@ -895,7 +878,9 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /
+        prefix: /dkube
+    rewrite:
+        uri: /
     route:
     - destination:
         port:
