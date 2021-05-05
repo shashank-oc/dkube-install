@@ -584,6 +584,12 @@ spec:
         securityContext:
           procMount: Default
           runAsUser: 0
+        env:
+        - name: DKUBE_MOUNT_PATH
+          value: /dkube
+        volumeMounts:
+        - mountPath: /dkube
+          name: store
       - image: dkubeMlFlowServerImage
         imagePullPolicy: IfNotPresent
         name: d3mlflow
