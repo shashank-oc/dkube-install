@@ -571,13 +571,9 @@ spec:
     istio: ingressgateway
   servers:
   - port:
-      number: 443
-      name: https
-      protocol: HTTPS
-    tls:
-      mode: SIMPLE
-      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
-      privateKey: /etc/istio/ingressgateway-certs/tls.key
+      number: 80
+      name: http
+      protocol: HTTP
     hosts:
     - "*"
 ---
@@ -878,9 +874,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /dkube
-    rewrite:
-        uri: /
+        prefix: /
     route:
     - destination:
         port:
