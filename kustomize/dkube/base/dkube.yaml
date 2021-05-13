@@ -53,7 +53,7 @@ spec:
         - configMapRef:
             name: ceph-config
             optional: true
-        image: dkubeApiServerImage-kf
+        image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
         ports:
@@ -594,7 +594,7 @@ spec:
         - configMapRef:
             name: ceph-config
             optional: true
-        image: dkubeApiServerImage-kf
+        image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
         ports:
