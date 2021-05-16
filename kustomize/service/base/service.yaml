@@ -568,9 +568,6 @@ metadata:
   name: ingressgateway-gzip
   namespace: istio-system
 spec:
-  workloadSelector:
-    labels:
-      istio: ingressgateway
   configPatches:
     - applyTo: HTTP_FILTER
       match:
@@ -578,16 +575,34 @@ spec:
         listener:
           filterChain:
             filter:
-              name: "envoy.http_connection_manager"
+              name: envoy.filters.network.http_connection_manager
               subFilter:
-                name: 'envoy.router'
+                name: envoy.filters.http.router
       patch:
         operation: INSERT_BEFORE
         value:
-          name: envoy.gzip
-          config:
-            remove_accept_encoding_header: true
-            compression_level: DEFAULT
+          name: envoy.filters.http.compressor
+          typed_config:
+            '@type': >-
+              type.googleapis.com/envoy.extensions.filters.http.compressor.v3.Compressor
+            compressor_library:
+              name: text_optimized
+              typed_config:
+                '@type': >-
+                  type.googleapis.com/envoy.extensions.compression.gzip.compressor.v3.Gzip
+                compression_level: BEST_COMPRESSION
+                compression_strategy: DEFAULT_STRATEGY
+                memory_level: 3
+                window_bits: 10
+            response_direction_config:
+              common_config:
+                content_type:
+                  - '*/*'
+                min_content_length: 100
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
