@@ -536,16 +536,6 @@ spec:
         app: dkube-controller-master
     spec:
       containers:
-      - image: dkubePlServerImage
-        imagePullPolicy: IfNotPresent
-        name: d3pl
-        ports:
-        - containerPort: 5001
-          name: dkube-d3pl
-          protocol: TCP
-        securityContext:
-          procMount: Default
-          runAsUser: 0
       - image: dkubeMlFlowServerImage
         imagePullPolicy: IfNotPresent
         name: d3mlflow
