@@ -1130,17 +1130,29 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
     - uri:
         prefix: /dkube/v2/controller
     route:
     - destination:
+        host: dkube-controller-master
         port:
           number: 5000
-        host: dkube-controller-master
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH
+    - uri:
+        prefix: /dkube/v2/controller
     retries:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+    route:
+    - destination:
+        host: dkube-controller-master
+        port:
+          number: 5000
   - match:
     - uri:
         prefix: /api/2.0/mlflow
