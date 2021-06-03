@@ -1080,6 +1080,20 @@ spec:
   - match:
     - uri:
         prefix: /installer
+      method:
+        exact: POST
+    rewrite:
+        uri: /ui
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-installer-service
+  - match:
+    - uri:
+        prefix: /installer
+      method:
+        regex: PUT|DELETE|PATCH
     rewrite:
         uri: /ui
     route:
@@ -1094,6 +1108,18 @@ spec:
   - match:
     - uri:
         prefix: /report
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-installer-service
+  - match:
+    - uri:
+        prefix: /report
+      method:
+        regex: PUT|DELETE|PATCH
     route:
     - destination:
         port:
