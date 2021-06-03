@@ -1132,6 +1132,18 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/controller
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 5000
+        host: dkube-controller-master
+  - match:
+    - uri:
+        prefix: /dkube/v2/controller
+      method:
+        regex: PUT|DELETE|PATCH
     route:
     - destination:
         port:
