@@ -824,6 +824,20 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dkube/v2/ext
+    rewrite:
+        uri: /dkube/v2
+    route:
+    - destination:
+        port:
+          number: 9401
+        host: dkube-downloader
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dkube/v2/ext
     rewrite:
@@ -838,6 +852,20 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dkube/pipeline/logs/
+    rewrite:
+        uri: /dkube/v2/kubeflow/
+    route:
+    - destination:
+        port:
+          number: 9401
+        host: dkube-downloader
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dkube/pipeline/logs/
     rewrite:
@@ -864,6 +892,19 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+  - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dkube/v2/operator
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: dkube-operator-api-proxy
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dkube/v2/operator
     route:
