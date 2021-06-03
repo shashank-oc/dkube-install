@@ -744,6 +744,20 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/ext
+      method:
+        exact: POST
+    rewrite:
+        uri: /dkube/v2
+    route:
+    - destination:
+        port:
+          number: 9401
+        host: dkube-downloader
+  - match:
+    - uri:
+        prefix: /dkube/v2/ext
+      method:
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /dkube/v2
     route:
@@ -758,6 +772,20 @@ spec:
   - match:
     - uri:
         prefix: /dkube/pipeline/logs/
+      method:
+        exact: POST
+    rewrite:
+        uri: /dkube/v2/kubeflow/
+    route:
+    - destination:
+        port:
+          number: 9401
+        host: dkube-downloader
+  - match:
+    - uri:
+        prefix: /dkube/pipeline/logs/
+      method:
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /dkube/v2/kubeflow/
     route:
@@ -820,6 +848,20 @@ spec:
   - match:
     - uri:
         prefix: /dkube/grafana/
+      method:
+        exact: POST
+    rewrite:
+        uri: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: dkube-grafana
+  - match:
+    - uri:
+        prefix: /dkube/grafana/
+      method:
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /
     route:
