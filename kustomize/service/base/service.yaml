@@ -1009,6 +1009,18 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /inference
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: dkube-serving
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /inference
     route:
@@ -1021,6 +1033,18 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /predict
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: dkube-serving
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /predict
     route:
@@ -1045,6 +1069,22 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 3000
+        host: dkube-ui
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /
     route:
@@ -1229,6 +1269,20 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /installer
+    rewrite:
+        uri: /ui
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-installer-service
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /installer
     rewrite:
@@ -1243,6 +1297,18 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /report
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-installer-service
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /report
     route:
