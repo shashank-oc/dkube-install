@@ -610,6 +610,18 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dex
+    route:
+    - destination:
+        port:
+          number: 5556
+        host: dkube-auth-server
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dex
     route:
@@ -622,6 +634,20 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dkube/v2/login
+    rewrite:
+        uri: /login
+    route:
+    - destination:
+        port:
+          number: 3001
+        host: dkube-auth-server
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dkube/v2/login
     rewrite:
@@ -636,6 +662,20 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dkube/v2/logout
+    rewrite:
+        uri: /logout
+    route:
+    - destination:
+        port:
+          number: 3001
+        host: dkube-auth-server
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dkube/v2/logout
     rewrite:
@@ -688,6 +728,20 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /docs
+    rewrite:
+        uri: /docs
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-docs
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /docs
     rewrite:
@@ -702,6 +756,20 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /pagespeed
+    rewrite:
+      uri: /pagespeed
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /pagespeed
     retries:
@@ -716,6 +784,20 @@ spec:
         port:
           number: 8888
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /mod_pagespeed_beacon
+    rewrite:
+      uri: /mod_pagespeed_beacon
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /mod_pagespeed_beacon
     retries:
@@ -1154,6 +1236,18 @@ spec:
         port:
           number: 5000
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /api/2.0/mlflow
+    route:
+    - destination:
+        port:
+          number: 5002
+        host: dkube-controller-master
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /api/2.0/mlflow
     route:
