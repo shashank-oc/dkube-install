@@ -954,6 +954,22 @@ spec:
   - match:
     - uri:
         prefix: /katib
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 80
+        host: katib-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+  - match:
+    - uri:
+        prefix: /katib
+      method:
+        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -1093,7 +1109,7 @@ spec:
     - uri:
         prefix: /installer
       method:
-        regex: PUT|DELETE|PATCH
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /ui
     route:
@@ -1119,7 +1135,7 @@ spec:
     - uri:
         prefix: /report
       method:
-        regex: PUT|DELETE|PATCH
+        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -1193,7 +1209,7 @@ spec:
     - uri:
         prefix: /api/2.0/mlflow
       method:
-        regex: PUT|DELETE|PATCH
+        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
