@@ -929,6 +929,20 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dkube/grafana/
+    rewrite:
+        uri: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: dkube-grafana
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dkube/grafana/
     rewrite:
@@ -955,6 +969,20 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /dkube/v2/prometheus/api/v1
+    rewrite:
+        uri: /api/v1
+    route:
+    - destination:
+        port:
+          number: 9090
+        host: dkube-prometheus.dkube.svc.cluster.local
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /dkube/v2/prometheus/api/v1
     rewrite:
