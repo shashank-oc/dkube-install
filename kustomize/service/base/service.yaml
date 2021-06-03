@@ -1113,6 +1113,24 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /argo/logs/
+    rewrite:
+        uri: /api/logs/
+    route:
+    - destination:
+        port:
+          number: 80
+        host: argo-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /argo/logs/
     rewrite:
@@ -1143,6 +1161,22 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /katib
+    route:
+    - destination:
+        port:
+          number: 80
+        host: katib-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /katib
     route:
