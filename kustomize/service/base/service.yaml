@@ -896,6 +896,22 @@ spec:
   - match:
     - uri:
         prefix: /
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 3000
+        host: dkube-ui
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+  - match:
+    - uri:
+        prefix: /
+      method:
+        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -924,6 +940,24 @@ spec:
   - match:
     - uri:
         prefix: /argo/logs/
+      method:
+        exact: POST
+    rewrite:
+        uri: /api/logs/
+    route:
+    - destination:
+        port:
+          number: 80
+        host: argo-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+  - match:
+    - uri:
+        prefix: /argo/logs/
+      method:
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /api/logs/
     route:
