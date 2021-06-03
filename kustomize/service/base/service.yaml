@@ -1206,7 +1206,16 @@ spec:
   http:
   - match:
     - method:
-        regex: POST|DELETE
+        exact: POST
+      uri:
+        prefix: /pipeline/apis/v1beta1/experiments
+    route:
+    - destination:
+        host: dkube-controller-master
+        port:
+          number: 5001
+    - method:
+        exact: DELETE
       uri:
         prefix: /pipeline/apis/v1beta1/experiments
     route:
@@ -1220,7 +1229,17 @@ spec:
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
     - method:
-        regex: POST|DELETE
+        exact: POST
+      uri:
+        prefix: /pipeline/apis/v1beta1/pipeline
+    route:
+    - destination:
+        host: dkube-controller-master
+        port:
+          number: 5001
+  - match:
+    - method:
+        exact: DELETE
       uri:
         prefix: /pipeline/apis/v1beta1/pipeline
     route:
@@ -1237,10 +1256,6 @@ spec:
         exact: POST
       uri:
         exact: /pipeline/apis/v1beta1/runs
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
     route:
     - destination:
         host: dkube-controller-master
@@ -1261,6 +1276,24 @@ spec:
         port:
           number: 5001
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /pipeline
+    route:
+    - destination:
+        host: ml-pipeline-ui.kubeflow.svc.cluster.local
+        port:
+          number: 80
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+          remove:
+          - Cache-Control
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /pipeline
     route:
@@ -1279,6 +1312,18 @@ spec:
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
   - match:
+    - method:
+        exact: POST
+    - uri:
+        prefix: /ml_metadata
+    route:
+    - destination:
+        host: metadata-envoy-service.kubeflow.svc.cluster.local
+        port:
+          number: 9090
+  - match:
+    - method:
+        regex: PUT|DELETE|PATCH|GET
     - uri:
         prefix: /ml_metadata
     route:
