@@ -834,6 +834,20 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/prometheus/api/v1
+      method:
+        exact: POST
+    rewrite:
+        uri: /api/v1
+    route:
+    - destination:
+        port:
+          number: 9090
+        host: dkube-prometheus.dkube.svc.cluster.local
+  - match:
+    - uri:
+        prefix: /dkube/v2/prometheus/api/v1
+      method:
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /api/v1
     route:
@@ -860,6 +874,18 @@ spec:
   - match:
     - uri:
         prefix: /inference
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: dkube-serving
+  - match:
+    - uri:
+        prefix: /inference
+      method:
+        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -872,6 +898,18 @@ spec:
   - match:
     - uri:
         prefix: /predict
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: dkube-serving
+  - match:
+    - uri:
+        prefix: /predict
+      method:
+        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
