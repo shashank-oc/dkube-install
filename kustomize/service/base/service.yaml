@@ -1156,6 +1156,18 @@ spec:
   - match:
     - uri:
         prefix: /api/2.0/mlflow
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 5002
+        host: dkube-controller-master
+  - match:
+    - uri:
+        prefix: /api/2.0/mlflow
+      method:
+        regex: PUT|DELETE|PATCH
     route:
     - destination:
         port:
