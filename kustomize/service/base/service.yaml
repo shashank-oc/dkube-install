@@ -612,6 +612,19 @@ spec:
   - match:
     - uri:
         prefix: /dex
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 5556
+        host: dkube-auth-server
+    retries:
+  - match:
+    - uri:
+        prefix: /dex
+      method:
+        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -624,6 +637,20 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/login
+      method:
+        exact: POST
+    rewrite:
+        uri: /login
+    route:
+    - destination:
+        port:
+          number: 3001
+        host: dkube-auth-server
+  - match:
+    - uri:
+        prefix: /dkube/v2/login
+      method:
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /login
     route:
@@ -638,6 +665,20 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/logout
+      method:
+        exact: POST
+    rewrite:
+        uri: /logout
+    route:
+    - destination:
+        port:
+          number: 3001
+        host: dkube-auth-server
+  - match:
+    - uri:
+        prefix: /dkube/v2/logout
+      method:
+        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /logout
     route:
