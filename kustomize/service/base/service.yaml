@@ -619,12 +619,9 @@ spec:
         port:
           number: 5556
         host: dkube-auth-server
-    retries:
   - match:
     - uri:
         prefix: /dex
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -649,8 +646,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/login
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /login
     route:
@@ -677,8 +672,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/logout
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /logout
     route:
@@ -731,6 +724,18 @@ spec:
   - match:
     - uri:
         prefix: /docs
+      method:
+        exact: POST
+    rewrite:
+        uri: /docs
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-docs
+  - match:
+    - uri:
+        prefix: /docs
     rewrite:
         uri: /docs
     route:
@@ -745,12 +750,36 @@ spec:
   - match:
     - uri:
         prefix: /pagespeed
+      method:
+        exact: POST
+    rewrite:
+      uri: /pagespeed
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
+  - match:
+    - uri:
+        prefix: /pagespeed
     retries:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
     rewrite:
       uri: /pagespeed
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
+  - match:
+    - uri:
+        prefix: /mod_pagespeed_beacon
+      method:
+        exact: POST
+    rewrite:
+      uri: /mod_pagespeed_beacon
     route:
     - destination:
         host: dkube-docs
@@ -797,8 +826,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/ext
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /dkube/v2
     route:
@@ -825,8 +852,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/pipeline/logs/
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /dkube/v2/kubeflow/
     route:
@@ -853,18 +878,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/operator
-      method:
-        exact: POST
-    route:
-    - destination:
-        port:
-          number: 8000
-        host: dkube-operator-api-proxy
-  - match:
-    - uri:
-        prefix: /dkube/v2/operator
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -901,8 +914,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/grafana/
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /
     route:
@@ -941,8 +952,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/prometheus/api/v1
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /api/v1
     route:
@@ -979,8 +988,6 @@ spec:
   - match:
     - uri:
         prefix: /inference
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -1003,8 +1010,6 @@ spec:
   - match:
     - uri:
         prefix: /predict
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -1029,22 +1034,6 @@ spec:
   - match:
     - uri:
         prefix: /
-      method:
-        exact: POST
-    route:
-    - destination:
-        port:
-          number: 3000
-        host: dkube-ui
-      headers:
-        response:
-          add:
-            Cache-Control: no-cache, max-age=0
-  - match:
-    - uri:
-        prefix: /
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -1089,8 +1078,6 @@ spec:
   - match:
     - uri:
         prefix: /argo/logs/
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /api/logs/
     route:
@@ -1135,8 +1122,6 @@ spec:
   - match:
     - uri:
         prefix: /katib
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -1275,8 +1260,6 @@ spec:
   - match:
     - uri:
         prefix: /installer
-      method:
-        regex: PUT|DELETE|PATCH|GET
     rewrite:
         uri: /ui
     route:
@@ -1301,8 +1284,6 @@ spec:
   - match:
     - uri:
         prefix: /report
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
@@ -1351,8 +1332,6 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/controller
-      method:
-        regex: PUT|DELETE|PATCH
     route:
     - destination:
         port:
@@ -1375,8 +1354,6 @@ spec:
   - match:
     - uri:
         prefix: /api/2.0/mlflow
-      method:
-        regex: PUT|DELETE|PATCH|GET
     route:
     - destination:
         port:
