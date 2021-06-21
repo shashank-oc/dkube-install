@@ -553,11 +553,12 @@ spec:
     spec:
       containers:
         - name: prometheus
-          image: prom/prometheus:v2.13.1
+          image: prom/prometheus:v2.15.1
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--storage.tsdb.path=/prometheus/"
             - "--storage.tsdb.retention.time=3650d"
+            - "--web.enable-admin-api"
           ports:
             - containerPort: 9090
           volumeMounts:
