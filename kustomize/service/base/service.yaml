@@ -1020,6 +1020,28 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
+  name: kf-metadata-grpc
+  namespace: dkube
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - dkube-istio-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /ml_metadata
+    rewrite:
+        uri: /ml_metadata
+    route:
+    - destination:
+        port:
+          number: 9090
+        host: metadata-envoy-service.kubeflow.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
   name: dkube-installer
   namespace: dkube
 spec:
