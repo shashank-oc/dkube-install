@@ -514,69 +514,95 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   name: dkube-authn
-  namespace: dkube
+  namespace: istio-system
 spec:
-  filters:
-  - filterConfig:
-      httpService:
-        authorizationRequest:
-          allowedHeaders:
-            patterns:
-            - exact: cookie
-            - exact: mode
-            - exact: d3-license
-            - exact: d3-uname
-            - exact: d3-role
-            - exact: referer
-        authorizationResponse:
-          allowedUpstreamHeaders:
-            patterns:
-            - exact: kubeflow-userid
-            - exact: mode
-            - exact: d3-license
-            - exact: d3-uname
-            - exact: d3-role
-            - exact: x-cluster-id
-        serverUri:
-          cluster: outbound|3001||dkube-auth-server.dkube.svc.cluster.local
-          failureModeAllow: false
-          timeout: 10s
-          uri: http://dkube-auth-server.dkube.svc.cluster.local
-      statusOnError:
-        code: GatewayTimeout
-    filterName: envoy.ext_authz
-    filterType: HTTP
-    insertPosition:
-      index: FIRST
-    listenerMatch:
-      listenerType: GATEWAY
-  - filterConfig:
-      inlineCode: |
-        compression_level: BEST
-    filterName: envoy.gzip
-    filterType: HTTP
-    listenerMatch:
-      listenerProtocol: HTTP
-      listenerType: GATEWAY
-  workloadLabels:
-    dkube: ingressgateway
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    listener:
+      filterChain:
+        filter:
+          name: envoy.http_connection_manager
+          subFilter:
+            name: envoy.router
+    match:
+      context: GATEWAY
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.ext_authz
+        typed_config:
+          '@type': type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+          httpService:
+            authorizationRequest:
+              allowedHeaders:
+                patterns:
+                - exact: cookie
+                - exact: mode
+                - exact: d3-license
+                - exact: d3-uname
+                - exact: d3-role
+                - exact: referer
+            authorizationResponse:
+              allowedUpstreamHeaders:
+                patterns:
+                - exact: kubeflow-userid
+                - exact: mode
+                - exact: d3-license
+                - exact: d3-uname
+                - exact: d3-role
+                - exact: x-cluster-id
+            serverUri:
+              cluster: outbound|3001||dkube-auth-server.dkube.svc.cluster.local
+              timeout: 10s
+              uri: http://dkube-auth-server.dkube.svc.cluster.local
+          failure_mode_allow: false
+          status_on_error: 
+            code: GatewayTimeout
 ---
-apiVersion: v1
-kind: Service
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
 metadata:
-  name: dkube-proxy
-  namespace: dkube
-  labels:
-    dkube: ingressgateway
+  name: ingressgateway-gzip
+  namespace: istio-system
 spec:
-  type: NodePort
-  selector:
-    dkube: ingressgateway
-  ports:
-    -
-      name: https
-      nodePort: 32222
-      port: 443
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.compressor
+          typed_config:
+            '@type': >-
+              type.googleapis.com/envoy.extensions.filters.http.compressor.v3.Compressor
+            compressor_library:
+              name: text_optimized
+              typed_config:
+                '@type': >-
+                  type.googleapis.com/envoy.extensions.compression.gzip.compressor.v3.Gzip
+                compression_level: BEST_COMPRESSION
+                compression_strategy: DEFAULT_STRATEGY
+                memory_level: 3
+                window_bits: 10
+            response_direction_config:
+              common_config:
+                content_type:
+                  - '*/*'
+                min_content_length: 100
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -585,7 +611,7 @@ metadata:
   namespace: dkube
 spec:
   selector:
-    dkube: ingressgateway
+    istio: ingressgateway
   servers:
   - port:
       number: 443
@@ -593,8 +619,8 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
       privateKey: /etc/istio/ingressgateway-certs/tls.key
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
     hosts:
     - "*"
 ---
@@ -980,91 +1006,16 @@ spec:
   - dkube-istio-gateway
   http:
   - match:
-    - method:
-        regex: POST|DELETE
-      uri:
-        prefix: /pipeline/apis/v1beta1/experiments
-    route:
-    - destination:
-        host: dkube-controller-master
-        port:
-          number: 5001
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
-  - match:
-    - method:
-        regex: POST|DELETE
-      uri:
-        prefix: /pipeline/apis/v1beta1/pipeline
-    route:
-    - destination:
-        host: dkube-controller-master
-        port:
-          number: 5001
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
-  - match:
-    - method:
-        exact: POST
-      uri:
-        exact: /pipeline/apis/v1beta1/runs
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
-    route:
-    - destination:
-        host: dkube-controller-master
-        port:
-          number: 5001
-  - match:
-    - method:
-        exact: DELETE
-      uri:
-        prefix: /pipeline/apis/v1beta1/runs
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
-    route:
-    - destination:
-        host: dkube-controller-master
-        port:
-          number: 5001
-  - match:
     - uri:
         prefix: /pipeline
+    rewrite:
+      uri: /pipeline
     route:
     - destination:
         host: ml-pipeline-ui.kubeflow.svc.cluster.local
         port:
           number: 80
-      headers:
-        response:
-          add:
-            Cache-Control: no-cache, max-age=0
-          remove:
-          - Cache-Control
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
-  - match:
-    - uri:
-        prefix: /ml_metadata
-    route:
-    - destination:
-        host: metadata-envoy-service.kubeflow.svc.cluster.local
-        port:
-          number: 9090
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 300s
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
