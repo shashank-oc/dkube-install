@@ -361,20 +361,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dkube-db-server
-  namespace: dkube
-spec:
-  ports:
-  - port: 2379
-    protocol: TCP
-    targetPort: 2379
-  selector:
-    app: dkube-db-server
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
   name: dkube-docs
   namespace: dkube
 spec:
@@ -705,32 +691,6 @@ spec:
         port:
           number: 3001
         host: dkube-auth-server
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: dkube-db-server
-  namespace: dkube
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - dkube-istio-gateway
-  http:
-  - match:
-    - uri:
-        prefix: /dkube/v2/etcd/
-    rewrite:
-        uri: /
-    route:
-    - destination:
-        port:
-          number: 2379
-        host: dkube-db-server
     retries:
       attempts: 3
       perTryTimeout: 5s
