@@ -287,58 +287,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    ksonnet.io/component: dkube
-  name: dkube-db-server-verTag
-  namespace: dkube
-spec:
-  selector:
-    matchLabels:
-      app: dkube-db-server
-  template:
-    metadata:
-      labels:
-        app: dkube-db-server
-    spec:
-      containers:
-      - command:
-        - etcd
-        - --listen-client-urls=http://0.0.0.0:2379
-        - --advertise-client-urls=http://0.0.0.0:2379
-        - --data-dir=/var/lib/etcd
-        - --force-new-cluster
-        - --heartbeat-interval=1000
-        - --election-timeout=10000
-        image: k8s.gcr.io/etcd-amd64:3.1.12
-        imagePullPolicy: IfNotPresent
-        name: main
-        livenessProbe:
-          exec:
-            command:
-            - etcdctl
-            - cluster-health
-          failureThreshold: 3
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        volumeMounts:
-        - mountPath: /var/lib/etcd
-          name: etcd-data
-      dnsConfig:
-        options:
-        - name: single-request-reopen
-        - name: timeout
-          value: "30"
-      nodeSelector: NODE_SELECTOR
-      volumes:
-      - name: etcd-data
-        persistentVolumeClaim:
-          claimName: dkube-db-pvc
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
     app: dkube-tools
     ksonnet.io/component: dkube
   name: dkube-inf-doc-server-verTag
