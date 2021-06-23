@@ -638,6 +638,16 @@ spec:
   - match:
     - uri:
         prefix: /dex
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 5556
+        host: dkube-auth-server
+  - match:
+    - uri:
+        prefix: /dex
     route:
     - destination:
         port:
@@ -647,6 +657,18 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /dkube/v2/login
+      method:
+        exact: POST
+    rewrite:
+        uri: /login
+    route:
+    - destination:
+        port:
+          number: 3001
+        host: dkube-auth-server
   - match:
     - uri:
         prefix: /dkube/v2/login
@@ -661,6 +683,18 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /dkube/v2/logout
+      method:
+        exact: POST
+    rewrite:
+        uri: /logout
+    route:
+    - destination:
+        port:
+          number: 3001
+        host: dkube-auth-server
   - match:
     - uri:
         prefix: /dkube/v2/logout
@@ -716,6 +750,18 @@ spec:
   - match:
     - uri:
         prefix: /docs
+      method:
+        exact: POST
+    rewrite:
+        uri: /docs
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-docs
+  - match:
+    - uri:
+        prefix: /docs
     rewrite:
         uri: /docs
     route:
@@ -730,12 +776,36 @@ spec:
   - match:
     - uri:
         prefix: /pagespeed
+      method:
+        exact: POST
+    rewrite:
+      uri: /pagespeed
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
+  - match:
+    - uri:
+        prefix: /pagespeed
     retries:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
     rewrite:
       uri: /pagespeed
+    route:
+    - destination:
+        host: dkube-docs
+        port:
+          number: 8888
+  - match:
+    - uri:
+        prefix: /mod_pagespeed_beacon
+      method:
+        exact: POST
+    rewrite:
+      uri: /mod_pagespeed_beacon
     route:
     - destination:
         host: dkube-docs
@@ -770,6 +840,18 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/ext
+      method:
+        exact: POST
+    rewrite:
+        uri: /dkube/v2
+    route:
+    - destination:
+        port:
+          number: 9401
+        host: dkube-downloader
+  - match:
+    - uri:
+        prefix: /dkube/v2/ext
     rewrite:
         uri: /dkube/v2
     route:
@@ -781,6 +863,18 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /dkube/pipeline/logs/
+      method:
+        exact: POST
+    rewrite:
+        uri: /dkube/v2/kubeflow/
+    route:
+    - destination:
+        port:
+          number: 9401
+        host: dkube-downloader
   - match:
     - uri:
         prefix: /dkube/pipeline/logs/
@@ -834,6 +928,18 @@ spec:
   - match:
     - uri:
         prefix: /dkube/grafana/
+      method:
+        exact: POST
+    rewrite:
+        uri: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: dkube-grafana
+  - match:
+    - uri:
+        prefix: /dkube/grafana/
     rewrite:
         uri: /
     route:
@@ -857,6 +963,18 @@ spec:
   gateways:
   - dkube-istio-gateway
   http:
+  - match:
+    - uri:
+        prefix: /dkube/v2/prometheus/api/v1
+      method:
+        exact: POST
+    rewrite:
+        uri: /api/v1
+    route:
+    - destination:
+        port:
+          number: 9090
+        host: dkube-prometheus.dkube.svc.cluster.local
   - match:
     - uri:
         prefix: /dkube/v2/prometheus/api/v1
@@ -886,6 +1004,16 @@ spec:
   - match:
     - uri:
         prefix: /inference
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: dkube-serving
+  - match:
+    - uri:
+        prefix: /inference
     route:
     - destination:
         port:
@@ -895,6 +1023,16 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /predict
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: dkube-serving
   - match:
     - uri:
         prefix: /predict
@@ -950,6 +1088,22 @@ spec:
   - match:
     - uri:
         prefix: /argo/logs/
+      method:
+        exact: POST
+    rewrite:
+        uri: /api/logs/
+    route:
+    - destination:
+        port:
+          number: 80
+        host: argo-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
+  - match:
+    - uri:
+        prefix: /argo/logs/
     rewrite:
         uri: /api/logs/
     route:
@@ -977,6 +1131,20 @@ spec:
   gateways:
   - dkube-istio-gateway
   http:
+  - match:
+    - uri:
+        prefix: /katib
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 80
+        host: katib-ui.kubeflow.svc.cluster.local
+      headers:
+        response:
+          add:
+            Cache-Control: no-cache, max-age=0
   - match:
     - uri:
         prefix: /katib
@@ -1053,6 +1221,18 @@ spec:
   - match:
     - uri:
         prefix: /installer
+      method:
+        exact: POST
+    rewrite:
+        uri: /ui
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-installer-service
+  - match:
+    - uri:
+        prefix: /installer
     rewrite:
         uri: /ui
     route:
@@ -1064,6 +1244,16 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /report
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: dkube-installer-service
   - match:
     - uri:
         prefix: /report
@@ -1105,6 +1295,16 @@ spec:
   - match:
     - uri:
         prefix: /dkube/v2/controller
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 5000
+        host: dkube-controller-master
+  - match:
+    - uri:
+        prefix: /dkube/v2/controller
     route:
     - destination:
         port:
@@ -1114,6 +1314,16 @@ spec:
       attempts: 3
       perTryTimeout: 5s
       retryOn: gateway-error,connect-failure,refused-stream
+  - match:
+    - uri:
+        prefix: /api/2.0/mlflow
+      method:
+        exact: POST
+    route:
+    - destination:
+        port:
+          number: 5002
+        host: dkube-controller-master
   - match:
     - uri:
         prefix: /api/2.0/mlflow
