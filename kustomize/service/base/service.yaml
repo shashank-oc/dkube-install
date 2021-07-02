@@ -1207,6 +1207,26 @@ spec:
           number: 9090
         host: metadata-envoy-service.kubeflow.svc.cluster.local
 ---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kf-profiles-kfam
+  namespace: dkube
+spec:
+  gateways:
+  - dkube-istio-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        prefix: /kfam
+    route:
+    - destination:
+        host: profiles-kfam.kubeflow.svc.cluster.local
+        port:
+          number: 8081
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
