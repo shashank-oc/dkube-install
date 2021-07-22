@@ -425,6 +425,27 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    prometheus.io/port: "9111"
+    prometheus.io/dkube_scrape: "true"
+  labels:
+    app: dkube-node-exporter
+  name: dkube-node-exporter
+  namespace: dkube
+spec:
+  ports:
+  - name: metrics
+    port: 9111
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    app: dkube-ext
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: dkube-operator-api-proxy
   namespace: dkube
 spec:
@@ -490,7 +511,7 @@ spec:
     protocol: TCP
     targetPort: 9401
   selector:
-    app: dkube-storage-exporter
+    app: dkube-deploy-exporter
   type: ClusterIP
 ---
 apiVersion: v1
@@ -909,44 +930,6 @@ spec:
         port:
           number: 8000
         host: dkube-operator-api-proxy
-    retries:
-      attempts: 3
-      perTryTimeout: 5s
-      retryOn: gateway-error,connect-failure,refused-stream
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: dkube-prometheus-grafana
-  namespace: dkube
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - dkube-istio-gateway
-  http:
-  - match:
-    - uri:
-        prefix: /dkube/grafana/
-      method:
-        exact: POST
-    rewrite:
-        uri: /
-    route:
-    - destination:
-        port:
-          number: 80
-        host: dkube-grafana
-  - match:
-    - uri:
-        prefix: /dkube/grafana/
-    rewrite:
-        uri: /
-    route:
-    - destination:
-        port:
-          number: 80
-        host: dkube-grafana
     retries:
       attempts: 3
       perTryTimeout: 5s
