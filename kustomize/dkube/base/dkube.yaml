@@ -560,7 +560,7 @@ metadata:
   name: dkube-watcher-verTag
   namespace: dkube
 spec:
-  replicas: REPLICAS
+  replicas: watcherReplicas
   selector:
     matchLabels:
       app: dkube-d3watcher
