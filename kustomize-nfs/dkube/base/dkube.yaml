@@ -498,6 +498,9 @@ spec:
         volumeMounts:
         - mountPath: /var/log/dkube
           name: dkube-logs-host
+      - image: dkubeInfWatcherImage
+        imagePullPolicy: IfNotPresent
+        name: inference
       dnsConfig:
         options:
         - name: single-request-reopen
