@@ -116,7 +116,7 @@ kind: DaemonSet
 metadata:
   labels:
     app: dkube-ext
-  name: dkube-ds-exporter-verTag
+  name: dkube-exporter-ds-verTag
   namespace: dkube
 spec:
   selector:
@@ -428,9 +428,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: dkube-deploy-exporter
+    app: dkube-exporter-deploy
     ksonnet.io/component: dkube
-  name: dkube-deploy-exporter-verTag
+  name: dkube-exporter-deploy-verTag
   namespace: dkube
 spec:
   progressDeadlineSeconds: 600
@@ -438,7 +438,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: dkube-deploy-exporter
+      app: dkube-exporter-deploy
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -447,7 +447,7 @@ spec:
   template:
     metadata:
       labels:
-        app: dkube-deploy-exporter
+        app: dkube-exporter-deploy
     spec:
       containers:
       - env:

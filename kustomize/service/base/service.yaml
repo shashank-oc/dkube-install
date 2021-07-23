@@ -462,25 +462,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: dkube-prometheus-grafana
-    ksonnet.io/component: service
-  name: dkube-prometheus-grafana-proxy
-  namespace: dkube
-spec:
-  ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: 3000
-  selector:
-    app: dkube-prometheus-grafana
-  sessionAffinity: None
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
   name: dkube-serving
   namespace: dkube
 spec:
@@ -511,7 +492,7 @@ spec:
     protocol: TCP
     targetPort: 9401
   selector:
-    app: dkube-deploy-exporter
+    app: dkube-exporter-deploy
   type: ClusterIP
 ---
 apiVersion: v1

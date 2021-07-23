@@ -293,7 +293,7 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
-    app: dkube-deploy-exporter
+    app: dkube-exporter-deploy
   sessionAffinity: None
   type: ClusterIP
 
