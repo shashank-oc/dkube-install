@@ -556,6 +556,9 @@ spec:
       - image: dkubeMlFlowServerImage
         imagePullPolicy: IfNotPresent
         name: d3mlflow
+        env:
+        - name: CLUSTER_ID
+          value: clusterID
         ports:
         - containerPort: 5002
           name: dkube-d3mlflow
