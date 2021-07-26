@@ -1170,6 +1170,26 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
+  name: kf-profiles-kfam
+  namespace: dkube
+spec:
+  gateways:
+  - dkube-istio-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        prefix: /kfam
+    route:
+    - destination:
+        host: profiles-kfam.kubeflow.svc.cluster.local
+        port:
+          number: 8081
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
   name: dkube-installer
   namespace: dkube
 spec:
