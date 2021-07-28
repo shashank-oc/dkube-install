@@ -38,6 +38,8 @@ spec:
           value: nfsServer
         - name: NFS_BASE_PATH
           value: nfsBasePath
+        - name: CEPH_MONITORS
+          value: 'cephMonitors'
         - name: DKUBE_STORAGE_PROVIDER
           valueFrom:
             configMapKeyRef:
@@ -49,10 +51,6 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
-        envFrom:
-        - configMapRef:
-            name: ceph-config
-            optional: true
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -133,6 +131,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
+        - name: NVIDIA_MIG_MONITOR_DEVICES
+          value: all
         image: dkubeExtImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -141,8 +141,9 @@ spec:
           name: http-metrics
           protocol: TCP
         securityContext:
-          privileged: true
-          runAsUser: 0
+          capabilities:
+            add:
+              - SYS_ADMIN
         volumeMounts:
         - mountPath: /usr/local/nvidia/lib64
           name: nvidia-lib
@@ -576,6 +577,8 @@ spec:
           value: nfsBasePath
         - name: DKUBE_APISERVER_ROLE
           value: master
+        - name: CEPH_MONITORS
+          value: 'cephMonitors'
         - name: DKUBE_STORAGE_PROVIDER
           valueFrom:
             configMapKeyRef:
@@ -585,10 +588,6 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
-        envFrom:
-        - configMapRef:
-            name: ceph-config
-            optional: true
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
