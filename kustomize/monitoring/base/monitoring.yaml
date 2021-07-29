@@ -558,7 +558,7 @@ spec:
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--storage.tsdb.path=/prometheus/"
             - "--storage.tsdb.retention.time=3650d"
-            - "web.enable-admin-api"
+            - "--web.enable-admin-api"
           ports:
             - containerPort: 9090
           volumeMounts:
