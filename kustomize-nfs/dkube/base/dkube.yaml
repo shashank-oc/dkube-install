@@ -168,36 +168,6 @@ spec:
           readOnly: true
         - mountPath: /var/log
           name: varlog
-      - args:
-        - --web.listen-address=0.0.0.0:9111
-        - --path.procfs=/host/proc
-        - --path.sysfs=/host/sys
-        image: quay.io/prometheus/node-exporter:v0.15.2
-        imagePullPolicy: IfNotPresent
-        name: node-exporter
-        ports:
-        - containerPort: 9111
-          hostPort: 9111
-          name: metrics
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 200m
-            memory: 50Mi
-          requests:
-            cpu: 100m
-            memory: 30Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /host/proc
-          name: proc
-          readOnly: true
-        - mountPath: /host/sys
-          name: sys
-          readOnly: true
-      hostNetwork: true
-      hostPID: true
       serviceAccountName: dkube
       dnsConfig:
         options:
@@ -223,14 +193,6 @@ spec:
       - hostPath:
           path: LOG_PATH
         name: varlibdockercontainers
-      - hostPath:
-          path: /proc
-          type: ""
-        name: proc
-      - hostPath:
-          path: /sys
-          type: ""
-        name: sys
 
 ---
 apiVersion: apps/v1

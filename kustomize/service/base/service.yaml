@@ -425,27 +425,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    prometheus.io/port: "9111"
-    prometheus.io/dkube_scrape: "true"
-  labels:
-    app: dkube-node-exporter
-  name: dkube-node-exporter
-  namespace: dkube
-spec:
-  ports:
-  - name: metrics
-    port: 9111
-    protocol: TCP
-    targetPort: metrics
-  selector:
-    app: dkube-ext
-  sessionAffinity: None
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
   name: dkube-operator-api-proxy
   namespace: dkube
 spec:
