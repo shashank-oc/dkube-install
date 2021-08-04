@@ -53,8 +53,9 @@ spec:
         host: dkube-minio-server
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: apps/v1
 kind: Deployment

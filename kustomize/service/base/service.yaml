@@ -645,6 +645,7 @@ spec:
         port:
           number: 5556
         host: dkube-auth-server
+    timeout: 4m
   - match:
     - uri:
         prefix: /dex
@@ -655,8 +656,9 @@ spec:
         host: dkube-auth-server
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/login
@@ -669,6 +671,7 @@ spec:
         port:
           number: 3001
         host: dkube-auth-server
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/login
@@ -681,8 +684,9 @@ spec:
         host: dkube-auth-server
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/logout
@@ -695,6 +699,7 @@ spec:
         port:
           number: 3001
         host: dkube-auth-server
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/logout
@@ -707,8 +712,9 @@ spec:
         host: dkube-auth-server
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -733,8 +739,9 @@ spec:
         host: dkube-db-server
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -759,6 +766,7 @@ spec:
         port:
           number: 8888
         host: dkube-docs
+    timeout: 4m
   - match:
     - uri:
         prefix: /docs
@@ -771,8 +779,9 @@ spec:
         host: dkube-docs
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /pagespeed
@@ -785,12 +794,13 @@ spec:
         host: dkube-docs
         port:
           number: 8888
+    timeout: 4m
   - match:
     - uri:
         prefix: /pagespeed
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
     rewrite:
       uri: /pagespeed
@@ -799,6 +809,7 @@ spec:
         host: dkube-docs
         port:
           number: 8888
+    timeout: 4m
   - match:
     - uri:
         prefix: /mod_pagespeed_beacon
@@ -811,12 +822,13 @@ spec:
         host: dkube-docs
         port:
           number: 8888
+    timeout: 4m
   - match:
     - uri:
         prefix: /mod_pagespeed_beacon
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
     rewrite:
       uri: /mod_pagespeed_beacon
@@ -825,6 +837,7 @@ spec:
         host: dkube-docs
         port:
           number: 8888
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -849,6 +862,7 @@ spec:
         port:
           number: 9401
         host: dkube-downloader
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/ext
@@ -861,8 +875,9 @@ spec:
         host: dkube-downloader
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/pipeline/logs/
@@ -875,6 +890,7 @@ spec:
         port:
           number: 9401
         host: dkube-downloader
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/pipeline/logs/
@@ -887,8 +903,9 @@ spec:
         host: dkube-downloader
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -911,8 +928,9 @@ spec:
         host: dkube-operator-api-proxy
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -937,6 +955,7 @@ spec:
         port:
           number: 80
         host: dkube-grafana
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/grafana/
@@ -949,8 +968,9 @@ spec:
         host: dkube-grafana
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -975,6 +995,7 @@ spec:
         port:
           number: 9090
         host: dkube-prometheus.dkube.svc.cluster.local
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/prometheus/api/v1
@@ -987,8 +1008,9 @@ spec:
         host: dkube-prometheus.dkube.svc.cluster.local
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1011,6 +1033,7 @@ spec:
         port:
           number: 8000
         host: dkube-serving
+    timeout: 4m
   - match:
     - uri:
         prefix: /inference
@@ -1021,8 +1044,9 @@ spec:
         host: dkube-serving
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /predict
@@ -1033,6 +1057,7 @@ spec:
         port:
           number: 8000
         host: dkube-serving
+    timeout: 4m
   - match:
     - uri:
         prefix: /predict
@@ -1043,8 +1068,9 @@ spec:
         host: dkube-serving
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1073,6 +1099,7 @@ spec:
       attempts: 10
       perTryTimeout: 1s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1101,6 +1128,7 @@ spec:
         response:
           add:
             Cache-Control: no-cache, max-age=0
+    timeout: 4m
   - match:
     - uri:
         prefix: /argo/logs/
@@ -1117,8 +1145,9 @@ spec:
             Cache-Control: no-cache, max-age=0
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1145,6 +1174,7 @@ spec:
         response:
           add:
             Cache-Control: no-cache, max-age=0
+    timeout: 4m
   - match:
     - uri:
         prefix: /katib
@@ -1159,8 +1189,9 @@ spec:
             Cache-Control: no-cache, max-age=0
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1206,6 +1237,7 @@ spec:
         port:
           number: 9090
         host: metadata-envoy-service.kubeflow.svc.cluster.local
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1226,6 +1258,7 @@ spec:
         host: profiles-kfam.kubeflow.svc.cluster.local
         port:
           number: 8081
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1250,6 +1283,7 @@ spec:
         port:
           number: 8888
         host: dkube-installer-service
+    timeout: 4m
   - match:
     - uri:
         prefix: /installer
@@ -1262,8 +1296,9 @@ spec:
         host: dkube-installer-service
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /report
@@ -1274,6 +1309,7 @@ spec:
         port:
           number: 8888
         host: dkube-installer-service
+    timeout: 4m
   - match:
     - uri:
         prefix: /report
@@ -1284,8 +1320,9 @@ spec:
         host: dkube-installer-service
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1310,8 +1347,9 @@ spec:
         host: dkube-controller-worker
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/controller
@@ -1322,6 +1360,7 @@ spec:
         port:
           number: 5000
         host: dkube-controller-master
+    timeout: 4m
   - match:
     - uri:
         prefix: /dkube/v2/controller
@@ -1332,8 +1371,9 @@ spec:
         host: dkube-controller-master
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
   - match:
     - uri:
         prefix: /api/2.0/mlflow
@@ -1344,6 +1384,7 @@ spec:
         port:
           number: 5002
         host: dkube-controller-master
+    timeout: 4m
   - match:
     - uri:
         prefix: /api/2.0/mlflow
@@ -1354,8 +1395,9 @@ spec:
         host: dkube-controller-master
     retries:
       attempts: 3
-      perTryTimeout: 5s
+      perTryTimeout: 60s
       retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
 ---
 apiVersion: v1
 kind: Service
