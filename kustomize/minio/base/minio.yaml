@@ -46,8 +46,8 @@ spec:
         prefix: /minio/
     rewrite:
         uri: /
-      method:
-        exact: GET
+    method:
+      exact: GET
     route:
     - destination:
         port:
