@@ -44,10 +44,10 @@ spec:
   - match:
     - uri:
         prefix: /minio/
+      method:
+        exact: GET
     rewrite:
         uri: /
-    method:
-      exact: GET
     route:
     - destination:
         port:
