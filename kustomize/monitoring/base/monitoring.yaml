@@ -70,8 +70,8 @@ data:
           summary: High Memory Usage
   prometheus.yml: |-
     global:
-      scrape_interval: 5s
-      evaluation_interval: 5s
+      scrape_interval: 30s
+      evaluation_interval: 30s
     rule_files:
       - /etc/prometheus/prometheus.rules
     scrape_configs:
@@ -437,7 +437,7 @@ spec:
     spec:
       containers:
         - name: prometheus
-          image: prom/prometheus:v2.15.1
+          image: prom/prometheus:v2.28.1
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--storage.tsdb.path=/prometheus/"
