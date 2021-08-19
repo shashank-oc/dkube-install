@@ -504,6 +504,9 @@ spec:
       - image: dkubeInfWatcherImage
         imagePullPolicy: IfNotPresent
         name: inference
+        env:
+        - name: CLUSTER_ID
+          value: clusterID
       dnsConfig:
         options:
         - name: single-request-reopen
