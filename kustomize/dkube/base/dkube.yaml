@@ -51,6 +51,16 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
+        - name: DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: DATABASE
+        - name: DATABASE_DSN
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: DATABASE_DSN
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -553,6 +563,16 @@ spec:
           value: modelRegistry
         - name: CLUSTER_ID
           value: clusterID
+        - name: DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: DATABASE
+        - name: DATABASE_DSN
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: DATABASE_DSN
         envFrom:
         - configMapRef:
             name: ceph-config
