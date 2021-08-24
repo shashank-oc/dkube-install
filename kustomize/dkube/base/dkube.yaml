@@ -38,8 +38,6 @@ spec:
           value: nfsServer
         - name: NFS_BASE_PATH
           value: nfsBasePath
-        - name: CEPH_MONITORS
-          value: 'cephMonitors'
         - name: DKUBE_STORAGE_PROVIDER
           valueFrom:
             configMapKeyRef:
@@ -51,6 +49,10 @@ spec:
           value: dkubeClusterType
         - name: MODEL_REGISTRY
           value: modelRegistry
+        envFrom:
+        - configMapRef:
+            name: ceph-config
+            optional: true
         image: dkubeApiServerImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -91,19 +93,8 @@ spec:
       serviceAccountName: dkube
       volumes:
       - name: store
-        cephfs:
-          monitors: cephMonitors
-          path: /dkube
-          user: admin
-          secretRef:
-            name: ceph-secret
-      - name: dkube-logs
-        cephfs:
-          monitors: cephMonitors
-          path: /dkube/system/logs/dkube
-          user: admin
-          secretRef:
-            name: ceph-secret
+        persistentVolumeClaim:
+          claimName: dkube-pvc
       - hostPath:
           path: /var/run/docker.sock
         name: docker
@@ -286,12 +277,8 @@ spec:
       serviceAccountName: dkube
       volumes:
       - name: dkube-logs
-        cephfs:
-          monitors: cephMonitors
-          path: /dkube/system/logs/dkube
-          user: admin
-          secretRef:
-            name: ceph-secret
+        persistentVolumeClaim:
+          claimName: dkube-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -418,12 +405,8 @@ spec:
       terminationGracePeriodSeconds: 30
       volumes:
       - name: storage
-        cephfs:
-          monitors: cephMonitors
-          path: /
-          user: admin
-          secretRef:
-            name: ceph-secret
+        persistentVolumeClaim:
+          claimName: dkube-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -540,8 +523,6 @@ spec:
           value: nfsBasePath
         - name: DKUBE_APISERVER_ROLE
           value: master
-        - name: CEPH_MONITORS
-          value: 'cephMonitors'
         - name: DKUBE_STORAGE_PROVIDER
           valueFrom:
             configMapKeyRef:
@@ -592,19 +573,8 @@ spec:
       serviceAccountName: dkube
       volumes:
       - name: store
-        cephfs:
-          monitors: cephMonitors
-          path: /dkube
-          user: admin
-          secretRef:
-            name: ceph-secret
-      - name: dkube-logs
-        cephfs:
-          monitors: cephMonitors
-          path: /dkube/system/logs/dkube
-          user: admin
-          secretRef:
-            name: ceph-secret
+        persistentVolumeClaim:
+          claimName: dkube-pvc
       - hostPath:
           path: /var/run/docker.sock
         name: docker
