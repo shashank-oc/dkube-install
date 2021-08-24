@@ -68,9 +68,11 @@ spec:
         volumeMounts:
         - mountPath: /home/dkube/d3s
           name: store
+          subPath: dkube
         - mountPath: /var/run/docker.sock
           name: docker
         - mountPath: /var/log/dkube
+          subPath: dkube/system/logs/dkube
           name: dkube-logs
         - mountPath: /etc/dkube/dkube_platform_cfg
           name: pc
@@ -268,6 +270,7 @@ spec:
         volumeMounts:
         - mountPath: /var/log/dkube
           name: dkube-logs
+          subPath: dkube/system/logs/dkube
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: dkubeDockerSecret
@@ -502,6 +505,7 @@ spec:
         volumeMounts:
         - mountPath: /dkube
           name: store
+          subPath: dkube
       - env:
         - name: DKUBE_MOUNT_PATH
           value: /home/dkube/d3s
@@ -553,10 +557,12 @@ spec:
         volumeMounts:
         - mountPath: /home/dkube/d3s
           name: store
+          subPath: dkube
         - mountPath: /var/run/docker.sock
           name: docker
         - mountPath: /var/log/dkube
           name: dkube-logs
+          subPath: dkube/system/logs/dkube
         - mountPath: /etc/dkube/dkube_platform_cfg
           name: pc
       dnsConfig:
