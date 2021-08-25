@@ -73,7 +73,7 @@ spec:
           name: docker
         - mountPath: /var/log/dkube
           subPath: dkube/system/logs/dkube
-          name: dkube-logs
+          name: store
         - mountPath: /etc/dkube/dkube_platform_cfg
           name: pc
       - image: dkubeDownloaderImage
@@ -561,7 +561,7 @@ spec:
         - mountPath: /var/run/docker.sock
           name: docker
         - mountPath: /var/log/dkube
-          name: dkube-logs
+          name: store
           subPath: dkube/system/logs/dkube
         - mountPath: /etc/dkube/dkube_platform_cfg
           name: pc
