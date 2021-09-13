@@ -43,6 +43,11 @@ spec:
             configMapKeyRef:
               name: dkube-installer
               key: DKUBE_STORAGE_PROVIDER
+        - name: MINIMAL
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: MINIMAL
         - name: DKUBE_APISERVER_ROLE
           value: worker
         - name: DKUBE_CLUSTER
@@ -112,8 +117,7 @@ kind: DaemonSet
 metadata:
   labels:
     app: dkube-ext
-    ksonnet.io/component: dkube
-  name: dkube-exporter-verTag
+  name: dkube-exporter-ds-verTag
   namespace: dkube
 spec:
   selector:
@@ -137,7 +141,7 @@ spec:
           value: all
         image: dkubeExtImage
         imagePullPolicy: IfNotPresent
-        name: main
+        name: gpu-exporter
         ports:
         - containerPort: 9401
           name: http-metrics
@@ -151,6 +155,21 @@ spec:
           name: nvidia-lib
         - mountPath: /var/run/docker.sock
           name: docker
+      - image: fluentdImage
+        imagePullPolicy: IfNotPresent
+        name: log-processor
+        securityContext:
+          procMount: Default
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: LOG_PATH
+          name: varlibdockercontainers
+          readOnly: true
+        - mountPath: /fluentd/etc/
+          name: dkube-log-collector
+          readOnly: true
+        - mountPath: /var/log
+          name: varlog
       serviceAccountName: dkube
       dnsConfig:
         options:
@@ -166,53 +185,6 @@ spec:
       - hostPath:
           path: /var/run/docker.sock
         name: docker
-
----
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  labels:
-    k8s-app: dkube-log-collector
-    ksonnet.io/component: dkube
-  name: dkube-log-processor-verTag
-  namespace: dkube
-spec:
-  selector:
-    matchLabels:
-      k8s-app: dkube-log-collector
-  template:
-    metadata:
-      labels:
-        k8s-app: dkube-log-collector
-    spec:
-      tolerations:
-        - operator: "Exists"
-      containers:
-      - image: fluentdImage
-        imagePullPolicy: IfNotPresent
-        name: main
-        securityContext:
-          procMount: Default
-          runAsUser: 0
-        volumeMounts:
-        - mountPath: LOG_PATH
-          name: varlibdockercontainers
-          readOnly: true
-        - mountPath: /fluentd/etc/
-          name: dkube-log-collector
-          readOnly: true
-        - mountPath: /var/log
-          name: varlog
-      dnsConfig:
-        options:
-        - name: single-request-reopen
-        - name: timeout
-          value: "30"
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      serviceAccount: dkube
-      volumes:
       - hostPath:
           path: /var/log
         name: varlog
@@ -223,6 +195,7 @@ spec:
       - hostPath:
           path: LOG_PATH
         name: varlibdockercontainers
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -364,9 +337,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: dkube-storage-exporter
-    ksonnet.io/component: dkube
-  name: dkube-storage-exporter-verTag
+    app: dkube-exporter-deploy
+  name: dkube-exporter-deploy-verTag
   namespace: dkube
 spec:
   progressDeadlineSeconds: 600
@@ -374,7 +346,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: dkube-storage-exporter
+      app: dkube-exporter-deploy
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -383,7 +355,7 @@ spec:
   template:
     metadata:
       labels:
-        app: dkube-storage-exporter
+        app: dkube-exporter-deploy
     spec:
       containers:
       - env:
@@ -391,12 +363,79 @@ spec:
           value: /opt/dkube-storage
         image: storageExporterImage
         imagePullPolicy: IfNotPresent
-        name: main
+        name: storage-exporter
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /opt/dkube-storage
           name: storage
+      - image: quay.io/coreos/kube-state-metrics:v1.9.7
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        name: state-exporter
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 100m
+            memory: 130Mi
+          requests:
+            cpu: 100m
+            memory: 130Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - command:
+        - /pod_nanny
+        - --container=state-exporter
+        - --cpu=100m
+        - --extra-cpu=1m
+        - --memory=130Mi
+        - --extra-memory=2Mi
+        - --acceptance-offset=5
+        - --deployment=dkube-state-exporter
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: gcr.io/google-containers/addon-resizer-amd64:2.1
+        imagePullPolicy: IfNotPresent
+        name: addon-resizer
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 30Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
       dnsConfig:
         options:
         - name: single-request-reopen
@@ -408,6 +447,8 @@ spec:
       nodeSelector: NODE_SELECTOR
       restartPolicy: Always
       schedulerName: default-scheduler
+      serviceAccount: dkube-state-exporter
+      serviceAccountName: dkube-state-exporter
       terminationGracePeriodSeconds: 30
       volumes:
       - name: storage
@@ -424,7 +465,7 @@ metadata:
   name: dkube-watcher-verTag
   namespace: dkube
 spec:
-  replicas: 1
+  replicas: watcherReplicas
   selector:
     matchLabels:
       app: dkube-d3watcher
@@ -450,6 +491,12 @@ spec:
         volumeMounts:
         - mountPath: /var/log/dkube
           name: dkube-logs-host
+      - image: dkubeInfWatcherImage
+        imagePullPolicy: IfNotPresent
+        name: inference
+        env:
+        - name: CLUSTER_ID
+          value: clusterID
       dnsConfig:
         options:
         - name: single-request-reopen
@@ -535,6 +582,11 @@ spec:
             configMapKeyRef:
               name: dkube-installer
               key: DKUBE_STORAGE_PROVIDER
+        - name: MINIMAL
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: MINIMAL
         - name: DKUBE_CLUSTER
           value: dkubeClusterType
         - name: MODEL_REGISTRY

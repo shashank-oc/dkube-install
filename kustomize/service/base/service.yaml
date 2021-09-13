@@ -427,25 +427,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: dkube-prometheus-grafana
-    ksonnet.io/component: service
-  name: dkube-prometheus-grafana-proxy
-  namespace: dkube
-spec:
-  ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: 3000
-  selector:
-    app: dkube-prometheus-grafana
-  sessionAffinity: None
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
   name: dkube-serving
   namespace: dkube
 spec:
@@ -476,7 +457,7 @@ spec:
     protocol: TCP
     targetPort: 9401
   selector:
-    app: dkube-storage-exporter
+    app: dkube-exporter-deploy
   type: ClusterIP
 ---
 apiVersion: v1
@@ -900,46 +881,6 @@ spec:
         port:
           number: 8000
         host: dkube-operator-api-proxy
-    timeout: 60s
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: dkube-prometheus-grafana
-  namespace: dkube
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - dkube-istio-gateway
-  http:
-  - match:
-    - uri:
-        prefix: /dkube/grafana/
-      method:
-        exact: GET
-    rewrite:
-        uri: /
-    route:
-    - destination:
-        port:
-          number: 80
-        host: dkube-grafana
-    retries:
-      attempts: 3
-      perTryTimeout: 60s
-      retryOn: gateway-error,connect-failure,refused-stream
-    timeout: 4m
-  - match:
-    - uri:
-        prefix: /dkube/grafana/
-    rewrite:
-        uri: /
-    route:
-    - destination:
-        port:
-          number: 80
-        host: dkube-grafana
     timeout: 60s
 ---
 apiVersion: networking.istio.io/v1alpha3
