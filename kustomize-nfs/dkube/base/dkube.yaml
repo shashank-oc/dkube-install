@@ -465,7 +465,7 @@ metadata:
   name: dkube-watcher-verTag
   namespace: dkube
 spec:
-  replicas: watcherReplicas
+  replicas: 1
   selector:
     matchLabels:
       app: dkube-d3watcher
@@ -480,6 +480,11 @@ spec:
           value: dkube
         - name: CLUSTER_ID
           value: clusterID
+        - name: MINIMAL
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: MINIMAL
         image: dkubeWatcherImage
         imagePullPolicy: IfNotPresent
         name: main
@@ -497,6 +502,11 @@ spec:
         env:
         - name: CLUSTER_ID
           value: clusterID
+        - name: MINIMAL
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: MINIMAL
       dnsConfig:
         options:
         - name: single-request-reopen
