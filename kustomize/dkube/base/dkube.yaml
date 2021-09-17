@@ -314,6 +314,11 @@ spec:
       - image: dfabProxyImage
         imagePullPolicy: IfNotPresent
         name: main
+        env:
+        - name: DATABASE
+          value: databaseType
+        - name: DATABASE_DSN
+          value: databaseDSN
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
       dnsConfig:
