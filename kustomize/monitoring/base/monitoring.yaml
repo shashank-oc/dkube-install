@@ -530,6 +530,7 @@ spec:
             - "--storage.tsdb.path=/prometheus/"
             - "--storage.tsdb.retention.time=3650d"
             - "--web.enable-admin-api"
+            - "--web.enable-lifecycle"
           ports:
             - containerPort: 9090
           volumeMounts:
