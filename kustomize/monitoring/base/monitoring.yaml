@@ -469,7 +469,27 @@ spec:
     app: dkube-exporter-deploy
   sessionAffinity: None
   type: ClusterIP
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: "8000"
+    prometheus.io/dkube_scrape: "true"
+  labels:
+    app: deployments-exporter
+  name: deployments-exporter
+  namespace: dkube
+spec:
+  ports:
+  - name: deployment-metrics
+    port: 80
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: dkube-exporter-deploy
+  sessionAffinity: None
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
