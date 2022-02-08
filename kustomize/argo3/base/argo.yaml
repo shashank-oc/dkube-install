@@ -126,3 +126,33 @@ spec:
       schedulerName: default-scheduler
       nodeSelector: NODE_SELECTOR
       serviceAccountName: argo
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: message-dumper
+  namespace: modelmonitor
+  labels:
+    eventapp: message-dumper
+spec:
+  template:
+    spec:
+      containers:
+      - image: ocdr/pevent:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                name: minio-secret
+                key:  AWS_ACCESS_KEY_ID
+          - name: SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                name: minio-secret
+                key:  AWS_SECRET_ACCESS_KEY
+          - name: ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: minio-secret
+                key:  S3_ENDPOINT
