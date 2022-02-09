@@ -360,6 +360,19 @@ spec:
         app: dkube-exporter-deploy
     spec:
       containers:
+      - name: deployments-exporter
+        image: ocdr/deployments-exporter
+        ports:
+          - name: metrics
+            containerPort: 8000
+            protocol: TCP
+        volumeMounts:
+          - name: storage
+            mountPath: /opt/dkube-storage
+        imagePullPolicy: Always
+        env:
+        - name: PRODUCTION
+          value: 'true'
       - env:
         - name: DKUBE_STORAGE_PATH
           value: /opt/dkube-storage

@@ -523,7 +523,7 @@ spec:
                 - exact: x-cluster-id
             serverUri:
               cluster: outbound|3001||dkube-auth-server.dkube.svc.cluster.local
-              timeout: 10s
+              timeout: 30s
               uri: http://dkube-auth-server.dkube.svc.cluster.local
           failure_mode_allow: false
           status_on_error: 
