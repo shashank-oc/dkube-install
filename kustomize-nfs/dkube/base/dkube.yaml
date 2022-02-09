@@ -373,6 +373,9 @@ spec:
           - name: storage
             mountPath: /opt/dkube-storage
         imagePullPolicy: Always
+        env:
+        - name: PRODUCTION
+          value: 'true'
       - env:
         - name: DKUBE_STORAGE_PATH
           value: /opt/dkube-storage

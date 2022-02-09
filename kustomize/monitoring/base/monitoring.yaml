@@ -470,6 +470,7 @@ spec:
   sessionAffinity: None
   type: ClusterIP
 ---
+# This service enables/disables deployment metrics polling, export metrics
 apiVersion: v1
 kind: Service
 metadata:
