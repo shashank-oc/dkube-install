@@ -138,8 +138,8 @@ spec:
   template:
     spec:
       containers:
-      - image: ocdr/pevent:latest
-        imagePullPolicy: IfNotPresent
+      - image: ocdr/dkube-d3deploylogger:latest
+        imagePullPolicy: Always
         env:
           - name: ACCESSKEY
             valueFrom:
