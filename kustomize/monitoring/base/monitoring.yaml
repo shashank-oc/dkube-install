@@ -531,6 +531,24 @@ spec:
   type: ClusterIP
 
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dkube-alertmanager
+  name: dkube-alertmanager
+  namespace: dkube
+spec:
+  ports:
+  - name: http-alertmanager
+    port: 80
+    protocol: TCP
+    targetPort: 9093
+  selector:
+    app: dkube-prometheus
+  sessionAffinity: None
+  type: ClusterIP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
