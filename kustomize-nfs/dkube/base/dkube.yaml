@@ -364,7 +364,7 @@ spec:
     spec:
       containers:
       - name: deployments-exporter
-        image: ocdr/deployments-exporter
+        image: deploymentExporterImage
         ports:
           - name: metrics
             containerPort: 8000
