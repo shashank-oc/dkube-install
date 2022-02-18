@@ -1,10 +1,10 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: message-dumper
-  namespace: modelmonitor
+  name: deployment-logger
+  namespace: dkube 
   labels:
-    eventapp: message-dumper
+    eventapp: deployment-logger 
 spec:
   template:
     spec:
@@ -15,15 +15,15 @@ spec:
           - name: ACCESSKEY
             valueFrom:
               secretKeyRef:
-                name: minio-secret
+                name: deploy-logger-minio-secret
                 key:  AWS_ACCESS_KEY_ID
           - name: SECRETKEY
             valueFrom:
               secretKeyRef:
-                name: minio-secret
+                name: deploy-logger-minio-secret
                 key:  AWS_SECRET_ACCESS_KEY
           - name: ENDPOINT
             valueFrom:
               secretKeyRef:
-                name: minio-secret
+                name: deploy-logger-minio-secret
                 key:  S3_ENDPOINT
