@@ -689,16 +689,16 @@ spec:
           - name: ACCESSKEY
             valueFrom:
               secretKeyRef:
-                name: deploy-logger-minio-secret
+                name: deployment-logger-minio-secret
                 key:  AWS_ACCESS_KEY_ID
           - name: SECRETKEY
             valueFrom:
               secretKeyRef:
-                name: deploy-logger-minio-secret
+                name: deployment-logger-minio-secret
                 key:  AWS_SECRET_ACCESS_KEY
           - name: ENDPOINT
             valueFrom:
               secretKeyRef:
-                name: deploy-logger-minio-secret
+                name: deployment-logger-minio-secret
                 key:  S3_ENDPOINT
 ---
