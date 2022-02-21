@@ -139,6 +139,16 @@ data:
       scheme: http
       follow_redirects: true
       relabel_configs:
+      - source_labels: [__meta_kubernetes_service_label_networking_internal_knative_dev_serviceType]
+        separator: ;
+        regex: Private
+        replacement: $1
+        action: keep
+      - source_labels: [__meta_kubernetes_endpoint_port_name]
+        separator: ;
+        regex: http-usermetric
+        replacement: $1
+        action: keep
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
         regex: (.*)
