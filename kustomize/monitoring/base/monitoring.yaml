@@ -133,7 +133,6 @@ data:
         target_label: kubernetes_name
     - job_name: kfserving-monitoring
       honor_timestamps: true
-      scrape_interval: 120s
       scrape_timeout: 10s
       metrics_path: /metrics
       scheme: http
