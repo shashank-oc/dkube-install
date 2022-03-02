@@ -18,11 +18,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dkube-minio-server
+  name: dkube-minio-console-server
   namespace: dkube-infra
 spec:
   ports:
   - nodePort: 32223
+    port: 9001
+    protocol: TCP
+    targetPort: 9001
+  selector:
+    app: minio
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dkube-minio-server
+  namespace: dkube-infra
+spec:
+  ports:
+  - nodePort: 32221
     port: 9000
     protocol: TCP
     targetPort: 9000
@@ -91,6 +106,10 @@ spec:
       containers:
       - args:
         - server
+        - --address
+        - :9000
+        - --console-address
+        - :9001
         - /storage
         env:
         - name: MINIO_ACCESS_KEY
@@ -102,6 +121,8 @@ spec:
         name: main
         ports:
         - containerPort: 9000
+          protocol: TCP
+        - containerPort: 9001
           protocol: TCP
         resources:
           limits:
