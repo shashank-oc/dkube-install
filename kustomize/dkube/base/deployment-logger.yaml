@@ -9,7 +9,7 @@ spec:
   template:
     spec:
       containers:
-      - image: ocdr/dkube-d3deploylogger:v1
+      - image: ocdr/dkube-d3deploylogger:v1.1
         imagePullPolicy: Always
         env:
           - name: ACCESSKEY
