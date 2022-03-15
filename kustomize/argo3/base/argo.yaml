@@ -57,10 +57,9 @@ subjects:
 ---
 apiVersion: v1
 data:
-  config: |
-    artifactRepository:
-      archiveLogs: false
-    instanceID: modelmonitor
+  artifactRepository: |
+    archiveLogs: false
+  instanceID: modelmonitor
 kind: ConfigMap
 metadata:
   labels:
