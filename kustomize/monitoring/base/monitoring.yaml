@@ -3918,7 +3918,7 @@ spec:
             secretKeyRef:
               key: password
               name: dkube-prometheus-grafana
-        image: grafana/grafana:5.0.0
+        image: grafana/grafana:8.4.4
         imagePullPolicy: IfNotPresent
         name: grafana
         ports:
