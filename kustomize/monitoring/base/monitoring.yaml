@@ -588,13 +588,13 @@ apiVersion: v1
 data:
   prometheus-datasource.json: |
     {
-      "access": "direct",
+      "access": "proxy",
       "basicAuth": false,
       "name": "prometheus",
       "type": "prometheus",
-      "url": "http://DKUBE_MASTER_CONTROLLER:32222/dkube/v2/prometheus"
+      "url": "http://dkube-prometheus:9090"
     }
-  modelmonitoring-dashboard.json: |-
+  monitoring-health-dashboard.json: |-
     {
         "inputs": [{
             "name": "DS_PROMETHEUS",
@@ -634,8 +634,8 @@ data:
               "editable": true,
               "fiscalYearStartMonth": 0,
               "graphTooltip": 0,
-              "id": 7,
-              "iteration": 1648186863560,
+              "id": null,
+              "iteration": 1648226037253,
               "links": [],
               "liveNow": false,
               "panels": [
@@ -987,7 +987,7 @@ data:
                         "uid": "kUG-tjE7k"
                       },
                       "exemplar": true,
-                      "expr": "sum(mm_deployment_memory_usage{mm_id=\"$mm_id\"})*100",
+                      "expr": "sum(mm_deployment_memory_usage{mm_id=\"$mm_id\"})",
                       "hide": false,
                       "interval": "",
                       "legendFormat": "Memory",
@@ -1013,7 +1013,7 @@ data:
                     {
                       "$$hashKey": "object:520",
                       "decimals": 2,
-                      "format": "percent",
+                      "format": "percentunit",
                       "label": "",
                       "logBase": 1,
                       "min": "0",
@@ -1030,6 +1030,53 @@ data:
                   "yaxis": {
                     "align": false
                   }
+                },
+                {
+                  "gridPos": {
+                    "h": 2,
+                    "w": 12,
+                    "x": 0,
+                    "y": 14
+                  },
+                  "id": 18,
+                  "options": {
+                    "activeTheme": "read-only",
+                    "disableThemePicker": true,
+                    "themes": [
+                      {
+                        "name": "read-only",
+                        "styles": [
+                          {
+                            "props": {
+                              "theme": "default"
+                            },
+                            "type": "basetheme"
+                          },
+                          {
+                            "props": {
+                              "url": ""
+                            },
+                            "type": "bgimage"
+                          },
+                          {
+                            "props": {
+                              "url": ""
+                            },
+                            "type": "url"
+                          },
+                          {
+                            "props": {
+                              "text": ".sidemenu {\n  display: none;\n}\n\n[aria-label='Search links'] {\n  display: none;\n}\n\n[aria-label='Cycle view mode'] {\n  display: none;\n}\n\n.page-toolbar > div:first-child {\n  display: none;\n}\n\n[aria-label='Share dashboard or panel'] {\n  display: none;\n}\n\n[aria-label='Mark as favorite'] {\n  display: hidden;\n}\n\n.panel-header {  pointer-events: none;}"
+                            },
+                            "type": "style"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "pluginVersion": "0.2.1",
+                  "transparent": true,
+                  "type": "yesoreyeram-boomtheme-panel"
                 }
               ],
               "refresh": false,
@@ -1060,8 +1107,8 @@ data:
                   {
                     "current": {
                       "selected": false,
-                      "text": "be0b820e-76c2-4685-be5f-bf20caeeb252",
-                      "value": "be0b820e-76c2-4685-be5f-bf20caeeb252"
+                      "text": "4e907a17-f3c5-4c3e-82ba-470968946f25",
+                      "value": "4e907a17-f3c5-4c3e-82ba-470968946f25"
                     },
                     "datasource": {
                       "type": "prometheus",
@@ -1189,9 +1236,8 @@ data:
               "timezone": "",
               "title": "health",
               "uid": "ziv5oWanz",
-              "version": 22,
+              "version": 46,
               "weekStart": ""
-            }
     }
 kind: ConfigMap
 metadata:
@@ -1246,7 +1292,7 @@ data:
     # the path relative working path
     ;static_root_path = public
     # enable gzip
-    ;enable_gzip = false
+    enable_gzip = true
     # https certs & key file
     ;cert_file =
     ;cert_key =
@@ -1636,6 +1682,8 @@ spec:
     spec:
       containers:
       - env:
+        - name: GF_INSTALL_PLUGIN
+          value: "yesoreyeram-boomtheme-panel 0.2.1"
         - name: GF_AUTH_BASIC_ENABLED
           value: "true"
         - name: GF_AUTH_ANONYMOUS_ENABLED
