@@ -612,8 +612,7 @@ data:
                 "pluginName": "Prometheus",
                 "type": "datasource"
             }],
-            {
-              "annotations": {
+            "annotations": {
                 "list": [
                   {
                     "builtIn": 1,
