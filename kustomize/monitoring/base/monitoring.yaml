@@ -1238,6 +1238,7 @@ data:
               "uid": "ziv5oWanz",
               "version": 46,
               "weekStart": ""
+              }
     }
 kind: ConfigMap
 metadata:
