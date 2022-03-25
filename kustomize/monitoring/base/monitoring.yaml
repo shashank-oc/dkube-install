@@ -1682,7 +1682,9 @@ spec:
     spec:
       containers:
       - env:
-        - name: GF_INSTALL_PLUGIN
+        - name: GF_SECURITY_ALLOW_EMBEDDING
+          value: "true"
+        - name: GF_INSTALL_PLUGINS
           value: "yesoreyeram-boomtheme-panel 0.2.1"
         - name: GF_AUTH_BASIC_ENABLED
           value: "true"
