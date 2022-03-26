@@ -635,7 +635,7 @@ data:
               "fiscalYearStartMonth": 0,
               "graphTooltip": 0,
               "id": null,
-              "iteration": 1648226037253,
+              "iteration": 1648305569695,
               "links": [],
               "liveNow": false,
               "panels": [
@@ -1066,7 +1066,7 @@ data:
                           },
                           {
                             "props": {
-                              "text": ".sidemenu {\n  display: none;\n}\n\n[aria-label='Search links'] {\n  display: none;\n}\n\n[aria-label='Cycle view mode'] {\n  display: none;\n}\n\n.page-toolbar > div:first-child {\n  display: none;\n}\n\n[aria-label='Share dashboard or panel'] {\n  display: none;\n}\n\n[aria-label='Mark as favorite'] {\n  display: hidden;\n}\n\n.panel-header {  pointer-events: none;}"
+                              "text": ".sidemenu {\n  display: none;\n}\n\n[aria-label='Search links'] {\n  display: none;\n}\n\n[aria-label='Cycle view mode'] {\n  display: none;\n}\n\n.page-toolbar > div:first-child {\n  display: none;\n}\n\n[aria-label='Share dashboard or panel'] {\n  display: none;\n}\n\n[aria-label='Mark as favorite'] {\n  display: none;\n}\n\n.panel-header {  pointer-events: none;}\n\n[aria-label='Add panel'] {\n  display: none;\n}\n[aria-label='Dashboard settings'] {\n  display: none;\n}\n[aria-label='Save dashboard'] {\n  display: none;\n}\n"
                             },
                             "type": "style"
                           }
@@ -1236,7 +1236,7 @@ data:
               "timezone": "",
               "title": "health",
               "uid": "ziv5oWanz",
-              "version": 46,
+              "version": 48,
               "weekStart": ""
               }
     }
