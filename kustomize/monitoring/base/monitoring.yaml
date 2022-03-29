@@ -635,7 +635,7 @@ data:
               "fiscalYearStartMonth": 0,
               "graphTooltip": 0,
               "id": null,
-              "iteration": 1648305569695,
+              "iteration": 1648487585091,
               "links": [],
               "liveNow": false,
               "panels": [
@@ -647,7 +647,6 @@ data:
                   "dashLength": 10,
                   "dashes": false,
                   "datasource": {
-                    "type": "prometheus",
                     "uid": "$Source"
                   },
                   "description": "",
@@ -698,11 +697,10 @@ data:
                   "targets": [
                     {
                       "datasource": {
-                        "type": "prometheus",
-                        "uid": "kUG-tjE7k"
+                        "uid": "$Source"
                       },
                       "exemplar": true,
-                      "expr": "sum(rate(mm_deployment_predictions_total{mm_id=\"$mm_id\"}[$rate_duration])) by (response_code_class)",
+                      "expr": "sum(rate(mm_deployment_predictions_total{mm_id=\"$mm_id\"}[$rate_duration])*60) by (response_code_class)",
                       "format": "time_series",
                       "interval": "",
                       "intervalFactor": 1,
@@ -711,7 +709,6 @@ data:
                     },
                     {
                       "datasource": {
-                        "type": "prometheus",
                         "uid": "$Source"
                       },
                       "exemplar": true,
@@ -734,7 +731,7 @@ data:
                       "op": "time"
                     }
                   ],
-                  "title": "Prediction Requests rate[1/s]",
+                  "title": "Prediction Requests rate[1/m]",
                   "tooltip": {
                     "shared": true,
                     "sort": 0,
@@ -749,7 +746,6 @@ data:
                   "yaxes": [
                     {
                       "$$hashKey": "object:104",
-                      "decimals": 0,
                       "format": "short",
                       "logBase": 1,
                       "min": "0",
@@ -780,7 +776,6 @@ data:
                   },
                   "dataFormat": "tsbuckets",
                   "datasource": {
-                    "type": "prometheus",
                     "uid": "$Source"
                   },
                   "gridPos": {
@@ -801,19 +796,18 @@ data:
                   "targets": [
                     {
                       "datasource": {
-                        "type": "prometheus",
-                        "uid": "kUG-tjE7k"
+                        "uid": "$Source"
                       },
                       "exemplar": true,
-                      "expr": "sum(rate(mm_deployment_latency_bucket{mm_id=\"$mm_id\"}[$rate_duration])) by (le)",
+                      "expr": "sum(rate(mm_deployment_latency_bucket{mm_id=\"$mm_id\"}[$rate_duration])*60) by (le)",
                       "format": "heatmap",
-                      "interval": "",
+                      "interval": "1m",
                       "intervalFactor": 1,
                       "legendFormat": "{{le}}",
                       "refId": "A"
                     }
                   ],
-                  "title": "Deployment Latency, event rate[1/s]",
+                  "title": "Deployment Latency, event rate[1/m]",
                   "tooltip": {
                     "show": true,
                     "showHistogram": false
@@ -899,7 +893,7 @@ data:
                     {
                       "$$hashKey": "object:1292",
                       "decimals": 2,
-                      "format": "short",
+                      "format": "ms",
                       "logBase": 1,
                       "min": "0",
                       "show": true
@@ -924,8 +918,7 @@ data:
                   "dashLength": 10,
                   "dashes": false,
                   "datasource": {
-                    "type": "prometheus",
-                    "uid": "kUG-tjE7k"
+                    "uid": "$Source"
                   },
                   "fill": 1,
                   "fillGradient": 0,
@@ -972,8 +965,7 @@ data:
                   "targets": [
                     {
                       "datasource": {
-                        "type": "prometheus",
-                        "uid": "kUG-tjE7k"
+                        "uid": "$Source"
                       },
                       "expr": "sum(rate(mm_deployment_cpu_usage_total{mm_id=\"$mm_id\"}[$rate_duration]))",
                       "format": "time_series",
@@ -983,8 +975,7 @@ data:
                     },
                     {
                       "datasource": {
-                        "type": "prometheus",
-                        "uid": "kUG-tjE7k"
+                        "uid": "$Source"
                       },
                       "exemplar": true,
                       "expr": "sum(mm_deployment_memory_usage{mm_id=\"$mm_id\"})",
@@ -1107,11 +1098,10 @@ data:
                   {
                     "current": {
                       "selected": false,
-                      "text": "4e907a17-f3c5-4c3e-82ba-470968946f25",
-                      "value": "4e907a17-f3c5-4c3e-82ba-470968946f25"
+                      "text": "213577a4-3ac6-47a5-a6fa-ff48d52d1571",
+                      "value": "213577a4-3ac6-47a5-a6fa-ff48d52d1571"
                     },
                     "datasource": {
-                      "type": "prometheus",
                       "uid": "$Source"
                     },
                     "definition": "label_values(deployment)",
@@ -1140,8 +1130,8 @@ data:
                     "auto_min": "10s",
                     "current": {
                       "selected": false,
-                      "text": "10m",
-                      "value": "10m"
+                      "text": "2m",
+                      "value": "2m"
                     },
                     "hide": 2,
                     "name": "rate_duration",
@@ -1152,7 +1142,7 @@ data:
                         "value": "1m"
                       },
                       {
-                        "selected": true,
+                        "selected": false,
                         "text": "10m",
                         "value": "10m"
                       },
@@ -1236,7 +1226,7 @@ data:
               "timezone": "",
               "title": "health",
               "uid": "ziv5oWanz",
-              "version": 48,
+              "version": 14,
               "weekStart": ""
               }
     }
