@@ -1,29 +1,46 @@
-apiVersion: serving.knative.dev/v1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: deployment-logger
   namespace: dkube
   labels:
-    eventapp: deployment-logger
+    app: deployment-logger
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployment-logger
   template:
+    metadata:
+      labels:
+        app: deployment-logger
     spec:
       containers:
-      - image: ocdr/dkube-d3deploylogger:v1.1
+      - name: main
+        image: ocdr/dkube-d3deploylogger:sameer
         imagePullPolicy: Always
-        env:
-          - name: ACCESSKEY
-            valueFrom:
-              secretKeyRef:
-                name: deployment-logger-minio-secret
-                key:  AWS_ACCESS_KEY_ID
-          - name: SECRETKEY
-            valueFrom:
-              secretKeyRef:
-                name: deployment-logger-minio-secret
-                key:  AWS_SECRET_ACCESS_KEY
-          - name: ENDPOINT
-            valueFrom:
-              secretKeyRef:
-                name: deployment-logger-minio-secret
-                key:  S3_ENDPOINT
+        volumeMounts:
+        - mountPath: /dkube/store
+          name: dkube-store
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: dkube-store
+        persistentVolumeClaim:
+          claimName: dkube-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+      app: deployment-logger
+  name: deployment-logger
+  namespace: dkube
+spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+        app: deployment-logger
+    type: ClusterIP
