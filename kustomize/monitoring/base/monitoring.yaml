@@ -87,7 +87,6 @@ data:
       scrape_interval: 30s
       evaluation_interval: 30s
     rule_files:
-      - /etc/prometheus/prometheus.rules
       - /prometheus/rules/*.yml
     alerting:
       alertmanagers:
