@@ -612,6 +612,7 @@ data:
                 "type": "datasource"
             }],
             "annotations": {
+              "annotations": {
                 "list": [
                   {
                     "builtIn": 1,
@@ -711,7 +712,7 @@ data:
                         "uid": "$Source"
                       },
                       "exemplar": true,
-                      "expr": "sum(ALERTS{mm_id=\"$mm_id\"})",
+                      "expr": "sum(ALERTS{mm_id=\"$mm_id\", mm_type=\"health\"})",
                       "hide": false,
                       "interval": "",
                       "legendFormat": "ALERTS",
