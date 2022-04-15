@@ -711,7 +711,7 @@ data:
                         "uid": "$Source"
                       },
                       "exemplar": true,
-                      "expr": "sum(ALERTS{mm_id=\"$mm_id\", mm_type=\"health\"})",
+                      "expr": "sum(ALERTS{id=\"$mm_id\", type=\"health\", alertstate=\"firing\"})",
                       "hide": false,
                       "interval": "",
                       "legendFormat": "ALERTS",
