@@ -1674,8 +1674,6 @@ spec:
       - env:
         - name: GF_SECURITY_ALLOW_EMBEDDING
           value: "true"
-        - name: GF_INSTALL_PLUGINS
-          value: "yesoreyeram-boomtheme-panel 0.2.1"
         - name: GF_AUTH_BASIC_ENABLED
           value: "true"
         - name: GF_AUTH_ANONYMOUS_ENABLED
@@ -1690,7 +1688,7 @@ spec:
             secretKeyRef:
               key: password
               name: dkube-prometheus-grafana
-        image: grafana/grafana:8.4.4
+        image: ocdr/dkube-grafana:8.4.4
         imagePullPolicy: IfNotPresent
         name: grafana
         ports:
