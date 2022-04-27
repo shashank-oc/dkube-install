@@ -1362,3 +1362,19 @@ metadata:
 spec:
   externalName: dkube-minio-server.dkube-infra.svc.cluster.local
   type: ExternalName
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-grafana-login
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+      app: istio-ingressgateway
+  action: DENY
+  rules:
+  - to:
+    - operation:
+        paths: ["/dkube/grafana/login"]
