@@ -1707,8 +1707,6 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
-        - mountPath: /var/lib/grafana
-          name: grafana-storage
         - mountPath: /etc/grafana/grafana.ini
           name: grafana-config
           subPath: grafana.ini
@@ -1747,7 +1745,6 @@ spec:
       serviceAccountName: dkube-prometheus
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: grafana-storage
       - configMap:
           defaultMode: 420
           name: dkube-grafana-dashboard
