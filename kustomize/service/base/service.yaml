@@ -197,7 +197,8 @@ data:
          overflow_action throw_exception
          retry_type periodic
          retry_wait 10s
-         flush_mode immediate
+         flush_mode interval
+         flush_interval 30s
          flush_at_shutdown true
        </buffer>
     </match>
