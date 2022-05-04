@@ -1362,3 +1362,30 @@ metadata:
 spec:
   externalName: dkube-minio-server.dkube-infra.svc.cluster.local
   type: ExternalName
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: feast-online-server
+  namespace: default
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/target: "10"
+        autoscaling.knative.dev/scaleToZeroPodRetentionPeriod: "30m0s"
+    spec:
+      containers:
+      - image: ocdr/feast-olserver
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+        env:
+        - name: DKUBE_ACCESS_URL
+          value: http://dkube-controller-master.dkube:5000
+        - name: DKUBE_USER
+          value: ocdkube
+        - name: OFFLINE_DATASET
+          value: offline-dataset
+        - name: DKUBE_DATASET
+          value: online-dataset
