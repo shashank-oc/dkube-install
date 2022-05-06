@@ -86,6 +86,8 @@ data:
     global:
       scrape_interval: 30s
       evaluation_interval: 30s
+    remote_read: REMOTE_READ_CONFIG
+    remote_write: REMOTE_WRITE_CONFIG
     rule_files:
       - /prometheus/rules/*.yml
     alerting:
