@@ -642,8 +642,7 @@ data:
           "panels": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "91DfTc_nk"
+                "uid": "$Source"
               },
               "fieldConfig": {
                 "defaults": {
@@ -718,8 +717,7 @@ data:
               "targets": [
                 {
                   "datasource": {
-                    "type": "prometheus",
-                    "uid": "91DfTc_nk"
+                    "uid": "$Source"
                   },
                   "exemplar": true,
                   "expr": "sum(ALERTS{mm_id=~\".*\", alertstate=\"firing\"}) by (alertname)",
@@ -793,12 +791,11 @@ data:
                   "value": ""
                 },
                 "datasource": {
-                  "type": "prometheus",
-                  "uid": "91DfTc_nk"
+                    "uid": "$Source"
                 },
                 "definition": "label_values(mm_id)",
                 "hide": 2,
-                "includeAll": faflse,
+                "includeAll": false,
                 "label": "mm_id",
                 "multi": false,
                 "name": "mm_id",
