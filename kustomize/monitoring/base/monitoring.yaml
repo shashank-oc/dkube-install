@@ -546,11 +546,7 @@ spec:
       labels:
         app: dkube-prometheus
     spec:
-      containers:
-        - name: prometheus
-          image: prom/prometheus:v2.28.1
-          args:
-            - "--config.file=/etc/prometheus/prometheus.yml"
+    protocol: TCPe=/etc/prometheus/prometheus.yml"
             - "--storage.tsdb.path=/prometheus/"
             - "--storage.tsdb.retention.time=3650d"
             - "--web.enable-admin-api"
@@ -567,8 +563,7 @@ spec:
           args:
             - "--config.file=/prometheus/alertmanager/alertmanager.yml"
           ports:
-            - containerPort: 9093
-          volumeMounts:
+    protocol: TCP
             - name: prometheus-storage-volume
               mountPath: /prometheus/
 
@@ -594,6 +589,238 @@ data:
       "name": "prometheus",
       "type": "prometheus",
       "url": "http://dkube-prometheus:9090"
+    }
+  alert-history-dashboard.json: |-
+    {
+        "inputs": [{
+            "name": "DS_PROMETHEUS",
+            "pluginId": "prometheus",
+            "type": "datasource",
+            "value": "prometheus"
+        }],
+        "overwrite": true,
+        "dashboard": {
+            "__inputs": [{
+                "description": "",
+                "label": "prometheus",
+                "name": "DS_PROMETHEUS",
+                "pluginId": "prometheus",
+                "pluginName": "Prometheus",
+                "type": "datasource"
+            }],
+              "annotations": {
+            "list": [
+              {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                  "limit": 100,
+                  "matchAny": false,
+                  "tags": [],
+                  "type": "dashboard"
+                },
+                "type": "dashboard"
+              }
+            ]
+          },
+          "editable": true,
+          "fiscalYearStartMonth": 0,
+          "graphTooltip": 0,
+          "id": null,
+          "iteration": 1651813612530,
+          "links": [],
+          "liveNow": false,
+          "panels": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "91DfTc_nk"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "points",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "short"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 0
+              },
+              "id": 2,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "prometheus",
+                    "uid": "91DfTc_nk"
+                  },
+                  "exemplar": true,
+                  "expr": "sum(ALERTS{mm_id=~\".*\", alertstate=\"firing\"}) by (alertname)",
+                  "interval": "",
+                  "legendFormat": "{{alertname}}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Alerts History",
+              "type": "timeseries"
+            },
+            {
+              "gridPos": {
+                "h": 1,
+                "w": 12,
+                "x": 0,
+                "y": 8
+              },
+              "id": 4,
+              "options": {
+                "activeTheme": "read_only",
+                "disableThemePicker": true,
+                "themes": [
+                  {
+                    "name": "read_only",
+                    "styles": [
+                      {
+                        "type": "basetheme",
+                        "props": {
+                          "theme": "default"
+                        }
+                      },
+                      {
+                        "type": "bgimage",
+                        "props": {
+                          "url": ""
+                        }
+                      },
+                      {
+                        "type": "url",
+                        "props": {
+                          "url": ""
+                        }
+                      },
+                      {
+                        "type": "style",
+                        "props": {
+                          "text": ".sidemenu {\n  display: none;\n}\n\n[aria-label='Search links'] {\n  display: none;\n}\n\n[aria-label='Cycle view mode'] {\n  display: none;\n}\n\n.page-toolbar > div:first-child {\n  display: none;\n}\n\n[aria-label='Share dashboard or panel'] {\n  display: none;\n}\n\n[aria-label='Mark as favorite'] {\n  display: none;\n}\n\n.panel-header {  pointer-events: none;}\n\n[aria-label='Add panel'] {\n  display: none;\n}\n[aria-label='Dashboard settings'] {\n  display: none;\n}\n[aria-label='Save dashboard'] {\n  display: none;\n}\n"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "pluginVersion": "0.2.1",
+              "transparent": true,
+              "type": "yesoreyeram-boomtheme-panel"
+            }
+          ],
+          "refresh": "",
+          "schemaVersion": 35,
+          "style": "dark",
+          "tags": [],
+          "templating": {
+            "list": [
+              {
+                "current": {
+                  "isNone": true,
+                  "selected": false,
+                  "text": "None",
+                  "value": ""
+                },
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "91DfTc_nk"
+                },
+                "definition": "label_values(mm_id)",
+                "hide": 2,
+                "includeAll": faflse,
+                "label": "mm_id",
+                "multi": false,
+                "name": "mm_id",
+                "options": [],
+                "query": {
+                  "query": "",
+                  "refId": "prometheus-mm_id-Variable-Query"
+                },
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+              }
+            ]
+          },
+          "time": {
+            "from": "now-30m",
+            "to": "now"
+          },
+          "timepicker": {},
+          "timezone": "",
+          "title": "alerts_history",
+          "uid": "IAnfxh_7z",
+          "version": 12,
+          "weekStart": ""
+        }
     }
   monitoring-health-dashboard.json: |-
     {
@@ -685,8 +912,10 @@ data:
                   "seriesOverrides": [
                     {
                       "$$hashKey": "object:54",
-                      "alias": "ALERTS",
+                      "alias": "/^(?!.*(1xx|2xx|3xx|4xx|5xx))/",
+                      "color": "#FF7383",
                       "fill": 0,
+                      "legend": false,
                       "linewidth": 0,
                       "points": true,
                       "yaxis": 2
@@ -713,10 +942,10 @@ data:
                         "uid": "$Source"
                       },
                       "exemplar": true,
-                      "expr": "sum(ALERTS{id=\"$mm_id\", type=\"health\", alertstate=\"firing\"})",
+                      "expr": "sum(ALERTS{mm_id=\"$mm_id\", mm_type=\"health\", alertstate=\"firing\"}) by (alertname)",
                       "hide": false,
                       "interval": "",
-                      "legendFormat": "ALERTS",
+                      "legendFormat": "{{alertname}}",
                       "refId": "B"
                     }
                   ],
