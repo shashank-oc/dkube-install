@@ -156,6 +156,17 @@ spec:
       - image: fluentdImage
         imagePullPolicy: IfNotPresent
         name: log-processor
+        env:
+        - name: AWS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: accesskey
+              name: dkube-minio-secret
+        - name: AWS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secretkey
+              name: dkube-minio-secret
         securityContext:
           procMount: Default
           runAsUser: 0
