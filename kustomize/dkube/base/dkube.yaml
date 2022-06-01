@@ -144,6 +144,7 @@ spec:
           name: http-metrics
           protocol: TCP
         securityContext:
+          runAsUser: 0 
           capabilities:
             add:
               - SYS_ADMIN
@@ -155,6 +156,17 @@ spec:
       - image: fluentdImage
         imagePullPolicy: IfNotPresent
         name: log-processor
+        env:
+        - name: AWS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: accesskey
+              name: dkube-minio-secret
+        - name: AWS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secretkey
+              name: dkube-minio-secret
         securityContext:
           procMount: Default
           runAsUser: 0
@@ -332,6 +344,8 @@ spec:
       nodeSelector: NODE_SELECTOR
       restartPolicy: Always
       schedulerName: default-scheduler
+      serviceAccount: dkube
+      serviceAccountName: dkube
       terminationGracePeriodSeconds: 30
 ---
 apiVersion: apps/v1

@@ -113,9 +113,15 @@ spec:
         - /storage
         env:
         - name: MINIO_ACCESS_KEY
-          value: dkube
+          valueFrom:
+            secretKeyRef:
+              name: dkube-minio-secret
+              key: accesskey
         - name: MINIO_SECRET_KEY
-          value: minioSecretKey
+          valueFrom:
+            secretKeyRef:
+              name: dkube-minio-secret
+              key: secretkey
         image: minio/minio:RELEASE.2022-02-26T02-54-46Z
         imagePullPolicy: IfNotPresent
         name: main
