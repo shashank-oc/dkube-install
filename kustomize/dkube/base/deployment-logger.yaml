@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: main
-        image: ocdr/dkube-d3deploylogger:v1.2
+        image: ocdr/dkube-d3deploylogger:v1.3
         imagePullPolicy: Always
         volumeMounts:
         - mountPath: /dkube/store
