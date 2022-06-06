@@ -28,6 +28,8 @@ spec:
       - name: dkube-store
         persistentVolumeClaim:
           claimName: dkube-pvc
+      serviceAccount: dkube
+      serviceAccountName: dkube
 ---
 apiVersion: v1
 kind: Service
