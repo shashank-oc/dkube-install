@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  alertmanager.yml: |
+    route:
+        receiver: 'null'
+    receivers:
+        - name: 'null'
+kind: ConfigMap
+metadata:
+  name: dkube-alertmanager-config
+  namespace: dkube
