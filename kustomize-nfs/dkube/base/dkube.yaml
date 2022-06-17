@@ -376,6 +376,17 @@ spec:
         env:
         - name: PRODUCTION
           value: 'true'
+        envFrom:
+        - name: DKUBE_DB
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: DATABASE
+        - name: DKUBE_DB_DSN
+          valueFrom:
+            configMapKeyRef:
+              name: dkube-installer
+              key: DATABASE_DSN
       - env:
         - name: DKUBE_STORAGE_PATH
           value: /opt/dkube-storage
