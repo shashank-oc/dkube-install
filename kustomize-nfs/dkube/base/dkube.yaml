@@ -376,7 +376,6 @@ spec:
         env:
         - name: PRODUCTION
           value: 'true'
-        envFrom:
         - name: DKUBE_DB
           valueFrom:
             configMapKeyRef:
