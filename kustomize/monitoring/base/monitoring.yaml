@@ -563,15 +563,16 @@ spec:
             - name: prometheus-storage-volume
               mountPath: /prometheus/
         - name: alertmanager
-          image: prom/alertmanager:v0.23.0
+          image: ocdr/dkube-alertmanager:v0.23.0
           args:
+            - "/bin/alertmanager"
+            - "--storage.path=/alertmanager"
             - "--config.file=/prometheus/alertmanager/alertmanager.yml"
           ports:
             - containerPort: 9093
           volumeMounts:
             - name: prometheus-storage-volume
               mountPath: /prometheus/
-
       serviceAccount: dkube-prometheus
       serviceAccountName: dkube-prometheus
       volumes:
@@ -579,7 +580,6 @@ spec:
           configMap:
             defaultMode: 420
             name: dkube-prometheus-config
-  
         - name: prometheus-storage-volume
           persistentVolumeClaim:
             claimName: dkube-prometheus-pvc
