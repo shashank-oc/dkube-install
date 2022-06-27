@@ -386,18 +386,6 @@ def deploy_all(args, rdma_enabled=False):
 	pretty_green("dKube-ui installation is done !!!")
 	time.sleep(1)
 
-	pretty_green("Starting dfabproxy installation ...")
-	install_dfabproxy()
-	pretty_green("dfabproxy installation is done !!!")
-
-
-def install_dfabproxy():
-	if sp.call("kubectl apply -f /opt/dkube/dfabproxy.yaml",shell=True):
-		pretty_red("dfabproxy install failed")
-		sys.exit(1)
-	time.sleep(1)
-
-
 def deploy_all_rdma(args):
 	pretty_green("Starting installation all+rdma...")
 

@@ -411,22 +411,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dkube-operator-api-proxy
-  namespace: dkube
-spec:
-  ports:
-  - name: dfabproxy
-    port: 8000
-    protocol: TCP
-    targetPort: 8000
-  selector:
-    app: dkube-operator-proxy
-  sessionAffinity: None
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
   name: dkube-serving
   namespace: dkube
 spec:
@@ -845,42 +829,6 @@ spec:
         port:
           number: 9401
         host: dkube-downloader
-    timeout: 60s
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: dkube-operator-api-proxy
-  namespace: dkube
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - dkube-istio-gateway
-  http:
-  - match:
-    - uri:
-        prefix: /dkube/v2/operator
-      method:
-        exact: GET
-    route:
-    - destination:
-        port:
-          number: 8000
-        host: dkube-operator-api-proxy
-    retries:
-      attempts: 3
-      perTryTimeout: 60s
-      retryOn: gateway-error,connect-failure,refused-stream
-    timeout: 4m
-  - match:
-    - uri:
-        prefix: /dkube/v2/operator
-    route:
-    - destination:
-        port:
-          number: 8000
-        host: dkube-operator-api-proxy
     timeout: 60s
 ---
 apiVersion: networking.istio.io/v1alpha3

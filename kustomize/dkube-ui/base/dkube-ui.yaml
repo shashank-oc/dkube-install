@@ -20,9 +20,8 @@ spec:
       - command:
         - bash
         - -c
-        - "while true;\ndo\n    nc dkube-operator-api-proxy.dkube 8000 -zv -w 5\n
-          \   ret1=$? \n    nc dkube-controller-master.dkube 5000 -zv -w 5\n    ret2=$?
-          \n    if (( ret1 == 0 && ret2 == 0 )); then\n        break   \n    fi      \n
+        - "while true;\ndo\n  nc dkube-controller-master.dkube 5000 -zv -w 5\n    ret1=$?
+          \n    if (( ret1 == 0 )); then\n        break   \n    fi      \n
           \   sleep 5\ndone\nbash /entrypoint.sh\n"
         image: dkubeUIImage
         imagePullPolicy: IfNotPresent
