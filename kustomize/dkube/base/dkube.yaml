@@ -579,6 +579,12 @@ spec:
         env:
         - name: CLUSTER_ID
           value: clusterID
+        - name: MLFLOW_S3_ENDPOINT_URL
+          value: http://dkube-minio-server.dkube-infra:9000
+        - name: AWS_ACCESS_KEY_ID
+          value: dkube
+        - name: AWS_SECRET_ACCESS_KEY
+          value: l06dands19s
         name: d3mlflow
         ports:
         - containerPort: 5002

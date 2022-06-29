@@ -1354,6 +1354,24 @@ spec:
           number: 5002
         host: dkube-controller-master
     timeout: 60s
+  - match:
+    - uri:
+        prefix: /ajax-api/2.0/preview/mlflow/artifacts
+    route:
+    - destination:
+        host: dkube-controller-master
+        port:
+          number: 5002
+    timeout: 60s
+  - match:
+    - uri:
+        prefix: /get-artifact
+    route:
+    - destination:
+        host: dkube-controller-master
+        port:
+          number: 5002
+    timeout: 60s
 ---
 apiVersion: v1
 kind: Service
