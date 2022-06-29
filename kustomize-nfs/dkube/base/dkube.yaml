@@ -588,7 +588,7 @@ spec:
         - name: AWS_ACCESS_KEY_ID
           value: dkube
         - name: AWS_SECRET_ACCESS_KEY
-          value: l06dands19s
+          value: minioSecretKey
         name: d3mlflow
         ports:
         - containerPort: 5002
