@@ -1376,7 +1376,7 @@ spec:
         autoscaling.knative.dev/scaleToZeroPodRetentionPeriod: "30m0s"
     spec:
       containers:
-      - image: ocdr/feast-olserver
+      - image: ocdr/feast-olserver:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8081
