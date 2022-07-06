@@ -1381,11 +1381,10 @@ spec:
         ports:
         - containerPort: 8081
         env:
-        - name: DKUBE_ACCESS_URL
-          value: http://dkube-controller-master.dkube:5000
-        - name: DKUBE_USER
-          value: ocdkube
-        - name: OFFLINE_DATASET
-          value: offline-dataset
-        - name: DKUBE_DATASET
-          value: online-dataset
+        - name: DKUBE_URL
+          value: https://dkube-proxy.dkube:443
+        - name: DKUBE_USER_ACCESS_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: ol-cm
+              key: DKUBE_USER_ACCESS_TOKEN
