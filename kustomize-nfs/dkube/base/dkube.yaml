@@ -615,9 +615,15 @@ spec:
         - name: MLFLOW_S3_ENDPOINT_URL
           value: http://dkube-minio-server.dkube-infra:9000
         - name: AWS_ACCESS_KEY_ID
-          value: dkube
+          valueFrom:
+            secretKeyRef:
+              key: accesskey
+              name: dkube-minio-secret
         - name: AWS_SECRET_ACCESS_KEY
-          value: minioSecretKey
+          valueFrom:
+            secretKeyRef:
+              key: secretkey
+              name: dkube-minio-secret
         name: d3mlflow
         ports:
         - containerPort: 5002
