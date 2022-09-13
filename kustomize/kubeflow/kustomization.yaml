@@ -2,4 +2,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 bases:
-- github.com/oneconvergence/kubeflow-manifests/dkube?ref=dkube-3.4
+- github.com/oneconvergence/kubeflow-manifests/dkube?ref=external-mysql-3.6
