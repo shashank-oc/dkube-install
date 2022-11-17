@@ -652,7 +652,7 @@ spec:
         - name: MODEL_REGISTRY
           value: modelRegistry
         - name: DKUBE_ENABLE_S3_MOUNT
-          value: "true"
+          value: "false"
         envFrom:
         - configMapRef:
             name: ceph-config

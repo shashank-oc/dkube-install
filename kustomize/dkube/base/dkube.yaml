@@ -651,7 +651,7 @@ spec:
         - name: CLUSTER_ID
           value: clusterID
         - name: DKUBE_ENABLE_S3_MOUNT
-          value: "true"
+          value: "false"
         envFrom:
         - configMapRef:
             name: ceph-config
