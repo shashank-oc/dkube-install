@@ -1373,6 +1373,46 @@ spec:
           number: 5002
     timeout: 60s
 ---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: dkube-minio-server
+  namespace: dkube
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - dkube-istio-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /minio/
+      method:
+        exact: GET
+    rewrite:
+        uri: /
+    route:
+    - destination:
+        port:
+          number: 9000
+        host: dkube-minio-server
+    retries:
+      attempts: 3
+      perTryTimeout: 60s
+      retryOn: gateway-error,connect-failure,refused-stream
+    timeout: 4m
+  - match:
+    - uri:
+        prefix: /minio/
+    rewrite:
+        uri: /
+    route:
+    - destination:
+        port:
+          number: 9000
+        host: dkube-minio-server
+    timeout: 60s
+---
 apiVersion: v1
 kind: Service
 metadata:
